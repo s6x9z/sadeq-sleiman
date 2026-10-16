@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Browse Courses - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span></a>
+      <div class="navbar-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="browse-courses.html">Courses</a>
+        <a href="subscription.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <a href="login.html" class="btn btn-outline btn-sm">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div style="padding-top:100px;min-height:100vh;padding-bottom:60px">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:32px">
+        <div class="badge">📚 Course Catalog</div>
+        <h2>Explore Our <span class="text-gradient">Courses</span></h2>
+        <p id="coursePageHint">Courses shown here come from the database.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;justify-content:center">
+        <button class="tab active" onclick="filterCourses('all', this)">All</button>
+        <button class="tab" onclick="filterCourses('Math', this)">🔢 Math</button>
+        <button class="tab" onclick="filterCourses('Science', this)">🔬 Science</button>
+        <button class="tab" onclick="filterCourses('Coding', this)">💻 Coding</button>
+        <button class="tab" onclick="filterCourses('Reading', this)">📖 Reading</button>
+        <button class="tab" onclick="filterCourses('Art', this)">🎨 Art</button>
+        <button class="tab" onclick="filterCourses('Music', this)">🎵 Music</button>
+      </div>
+      <div class="grid-3" id="coursesGrid">
+        <div class="card" style="padding:24px;color:var(--text-secondary)">
+          Loading courses...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Young Innovators. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  ```html
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+
+  <script>
+
+    let allCourses = [];
+
+    function filterCourses(subject, btn) {
+
+      document
+        .querySelectorAll('.tab')
+        .forEach(t => t.classList.remove('active'));
+
+      btn.classList.add('active');
+
+      renderCourses(
+        subject === 'all'
+          ? allCourses
+          : allCourses.filter(
+            c => c.subject === subject
+          )
+      );
+    }
+
+    function renderCourses(courses) {
+
+      const grid =
+        document.getElementById('coursesGrid');
+
+      if (!courses.length) {
+
+        grid.innerHTML = `
+      <div class="card" style="
+        padding:24px;
+        color:#666;
+        border-radius:20px;
+        background:white;
+      ">
+        No courses found.
+      </div>
+    `;
+
+        return;
+      }
+
+      grid.innerHTML = courses.map(course => `
+
+    <div class="course-card card" style="
+      overflow:hidden;
+      border-radius:24px;
+      background:white;
+      box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    ">
+
+      <div style="
+        height:220px;
+        background:linear-gradient(135deg,#6C63FF,#9D8DFF);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:5rem;
+      ">
+        🎮
+      </div>
+
+      <div style="padding:24px">
+
+        <h3 style="
+          font-size:1.5rem;
+          margin-bottom:10px;
+          color:#222;
+        ">
+          ${course.title} (ID: ${course.id})
+        </h3>
+
+        <p style="
+          color:#666;
+          margin-bottom:20px;
+          font-size:1rem;
+        ">
+          ${course.subject}
+        </p>
+
+        <button
+          class="btn btn-primary"
+          style="
+          width:100%;
+          border:none;
+          padding:14px;
+          border-radius:16px;
+          font-weight:700;
+          cursor:pointer;
+          background:linear-gradient(135deg,#6C63FF,#9D8DFF);
+          color:white;
+        "
+        onclick="enrollCourse(${course.id})"
+      >
+        📚 Enroll
+      </button>
+
+      </div>
+
+    </div>
+
+  `).join('');
+    }
+
+    async function loadGeneratedCourses() {
+
+      const result = await apiGet(
+        '../backend/api/courses.php?action=list'
+      );
+
+      console.log(result);
+
+      if (!result.ok) {
+        alert('Failed to load courses');
+        return;
+      }
+
+      allCourses = result.courses || [];
+
+      renderCourses(allCourses);
+    }
+
+    async function enrollCourse(courseId) {
+      const result = await apiPost(
+        '../backend/api/enrollment.php',
+        {
+          action: 'enroll',
+          course_id: courseId
+        }
+      );
+
+      if (!result.ok) {
+        alert(result.error || 'Enrollment failed');
+        return;
+      }
+
+      alert('Successfully enrolled!');
+    }
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      loadGeneratedCourses
+    );
+
+  </script>
+
+  <script src="./splash.js"></script>
+</body>
+
+</html>

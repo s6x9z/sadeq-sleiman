@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Register - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar auth-navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <a href="login.html" class="btn btn-outline btn-sm">Log In</a>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="auth-page">
+    <div class="auth-container" style="max-width:560px">
+      <div class="auth-card animate-fadeInUp">
+        <div class="auth-header">
+          <div class="auth-icon"><img src="./logo.png" alt="Young Innovators"
+              style="width:60px;height:60px;border-radius:50%;object-fit:cover"></div>
+          <h2>Join Young Innovators</h2>
+          <p>Choose your account type to get started</p>
+        </div>
+
+        <!-- Role Selector -->
+        <div class="role-selector" id="roleSelector">
+
+          <div class="role-option selected" data-role="parent" onclick="selectRole('parent')">
+
+            <div class="role-icon">👨‍👩‍👧</div>
+
+            <div class="role-name">Parent</div>
+
+            <div class="role-desc">
+              Create & manage child accounts
+            </div>
+
+          </div>
+
+          <div class="role-option" data-role="provider" onclick="selectRole('provider')">
+
+            <div class="role-icon">📚</div>
+
+            <div class="role-name">Content Provider</div>
+
+            <div class="role-desc">
+              Create courses & games
+            </div>
+
+          </div>
+
+        </div>
+
+        <div id="alertBox"></div>
+
+        <!-- Parent Registration Form -->
+        <form id="parentForm" onsubmit="handleParentRegister(event)">
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" class="form-control" id="pFirstName" placeholder="John" required>
+            </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" class="form-control" id="pLastName" placeholder="Doe" required>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" class="form-control" id="pBirthdate" required>
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" class="form-control" id="pPhone" placeholder="+1 (555) 000-0000" required>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" id="pEmail" placeholder="parent@email.com" required>
+          </div>
+
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" id="pUsername" placeholder="Choose a username" required>
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>Password</label>
+
+              <div class="password-wrapper">
+
+                <input type="password" class="form-control" id="pPassword" placeholder="Min 8 characters" required
+                  pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$"
+                  title="Password must contain at least 8 characters, 1 capital letter, 1 number and 1 symbol">
+
+                <button type="button" class="toggle-password" onclick="togglePassword('pPassword', this)">
+
+                  <i class="fa-solid fa-eye"></i>
+
+                </button>
+
+              </div>
+
+              <small class="error-message">
+                Password must contain:
+                8 characters, 1 capital letter, 1 number and 1 symbol
+              </small>
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Confirm Password</label>
+
+              <div class="password-wrapper">
+
+                <input type="password" class="form-control" id="pConfirmPassword" placeholder="Confirm password"
+                  required>
+
+                <button type="button" class="toggle-password" onclick="togglePassword('pConfirmPassword', this)">
+
+                  <i class="fa-solid fa-eye"></i>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <label
+            style="display:flex;align-items:flex-start;gap:8px;margin-bottom:20px;font-size:0.85rem;cursor:pointer">
+
+            <input type="checkbox" required style="accent-color:var(--primary);margin-top:3px">
+
+            I agree to the Terms of Service and Privacy Policy
+
+          </label>
+
+          <button type="submit" class="btn btn-primary" style="width:100%">
+
+            Create Parent Account →
+
+          </button>
+
+        </form>
+
+        <form id="providerForm" style="display:none" onsubmit="handleProviderRegister(event)">
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" class="form-control" id="prFirstName" placeholder="Jane" required>
+            </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" class="form-control" id="prLastName" placeholder="Smith" required>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+
+            <input type="email" class="form-control" id="prEmail" placeholder="provider@school.edu" required>
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>Username</label>
+
+              <input type="text" class="form-control" id="prUsername" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+              <label>Phone Number</label>
+
+              <input type="tel" class="form-control" id="prPhone" placeholder="+1 (555) 000-0000" required>
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>Password</label>
+
+              <div class="password-wrapper">
+
+                <input type="password" class="form-control" id="prPassword" placeholder="Min 8 characters" required
+                  pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$"
+                  title="Password must contain at least 8 characters, 1 capital letter, 1 number and 1 symbol">
+
+                <button type="button" class="toggle-password" onclick="togglePassword('prPassword', this)">
+
+                  <i class="fa-solid fa-eye"></i>
+
+                </button>
+
+              </div>
+
+              <small class="error-message">
+                Password must contain:
+                8 characters, 1 capital letter, 1 number and 1 symbol
+              </small>
+
+            </div>
+
+            <div class="form-group">
+
+              <label>Confirm Password</label>
+
+              <div class="password-wrapper">
+
+                <input type="password" class="form-control" id="prConfirmPassword" placeholder="Confirm password"
+                  required>
+
+                <button type="button" class="toggle-password" onclick="togglePassword('prConfirmPassword', this)">
+
+                  <i class="fa-solid fa-eye"></i>
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>Organization / School</label>
+
+              <input type="text" class="form-control" id="prOrg" placeholder="Your school or organization" required>
+            </div>
+
+            <div class="form-group">
+              <label>Qualifications</label>
+
+              <input type="text" class="form-control" id="prQualifications" placeholder="e.g., PhD in Education"
+                required>
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>Years of Experience</label>
+
+              <input type="number" class="form-control" id="prExperience" placeholder="5" min="0" required>
+            </div>
+
+            <div class="form-group">
+              <label>Specialties</label>
+
+              <input type="text" class="form-control" id="prSpecialties" placeholder="Math, Science, Coding" required>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label>CV Upload</label>
+
+            <input type="file" class="form-control" id="prCV" accept=".pdf,.doc,.docx" required>
+          </div>
+
+          <div class="form-group">
+            <label>ID Verification</label>
+
+            <input type="file" class="form-control" id="prID" accept=".pdf,.jpg,.png">
+          </div>
+
+          <div class="form-group">
+
+            <label>Portfolio / LinkedIn URL</label>
+
+            <input type="url" class="form-control" id="prPortfolio"
+              placeholder="https://www.linkedin.com/in/yourprofile" required>
+
+          </div>
+
+          <div class="alert alert-warning" style="font-size:0.85rem">
+
+            <span>⚠️</span>
+
+            <span>
+              Your account will require admin verification before you can access provider tools.
+            </span>
+
+          </div>
+
+          <label
+            style="display:flex;align-items:flex-start;gap:8px;margin-bottom:20px;font-size:0.85rem;cursor:pointer">
+
+            <input type="checkbox" id="prTerms" required style="accent-color:var(--primary);margin-top:3px">
+
+            I agree to the Terms of Service and Provider Guidelines
+
+          </label>
+
+          <button type="submit" class="btn btn-secondary" style="width:100%">
+
+            Submit Application →
+
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          Already have an account? <a href="login.html">Log in here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+  <script>
+    let selectedRole = 'parent';
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+      document.querySelector(`[data-role="${role}"]`).classList.add('selected');
+
+      document.getElementById('parentForm').style.display = role === 'parent' ? 'block' : 'none';
+      document.getElementById('providerForm').style.display = role === 'provider' ? 'block' : 'none';
+      document.getElementById('alertBox').innerHTML = '';
+    }
+
+    function togglePassword(inputId, button) {
+
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('i');
+
+      if (input.type === 'password') {
+
+        input.type = 'text';
+
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+
+      } else {
+
+        input.type = 'password';
+
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    async function handleParentRegister(e) {
+
+      e.preventDefault();
+
+      const password =
+        document.getElementById('pPassword').value;
+
+      const confirm =
+        document.getElementById('pConfirmPassword').value;
+
+      if (password !== confirm) {
+
+        document.getElementById('alertBox').innerHTML =
+          `<div class="alert alert-error">
+        <span>❌</span>
+        Passwords do not match!
+      </div>`;
+
+        return;
+      }
+
+      const data = {
+
+        display_name:
+          document.getElementById('pUsername').value,
+
+        username:
+          document.getElementById('pUsername').value,
+
+        first_name:
+          document.getElementById('pFirstName').value,
+
+        last_name:
+          document.getElementById('pLastName').value,
+
+        birthdate:
+          document.getElementById('pBirthdate').value,
+
+        phone:
+          document.getElementById('pPhone').value,
+
+        email:
+          document.getElementById('pEmail').value,
+
+        password
+      };
+
+      try {
+
+        const result = await window.register(
+          data,
+          'parent'
+        );
+
+        if (!result) {
+
+          document.getElementById('alertBox').innerHTML =
+            `<div class="alert alert-error">
+          <span>❌</span>
+          Registration failed
+        </div>`;
+
+          return;
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        document.getElementById('alertBox').innerHTML =
+          `<div class="alert alert-error">
+        <span>❌</span>
+        Registration failed
+      </div>`;
+      }
+    }
+
+    async function handleProviderRegister(e) {
+      e.preventDefault();
+      const password = document.getElementById('prPassword').value;
+      const confirm = document.getElementById('prConfirmPassword').value;
+      if (password !== confirm) {
+        document.getElementById('alertBox').innerHTML = '<div class="alert alert-error"><span>❌</span> Passwords do not match!</div>';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('action', 'register_provider');
+      formData.append('display_name', document.getElementById('prUsername').value.trim());
+      formData.append('username', document.getElementById('prUsername').value.trim());
+      formData.append('first_name', document.getElementById('prFirstName').value.trim());
+      formData.append('last_name', document.getElementById('prLastName').value.trim());
+      formData.append('email', document.getElementById('prEmail').value.trim());
+      formData.append('phone', document.getElementById('prPhone').value.trim());
+      formData.append('password', password);
+      formData.append('org', document.getElementById('prOrg').value.trim());
+      formData.append('qualifications', document.getElementById('prQualifications').value.trim());
+      formData.append('experience', document.getElementById('prExperience').value);
+      formData.append('specialties', document.getElementById('prSpecialties').value.trim());
+      formData.append('portfolio_url', document.getElementById('prPortfolio').value.trim());
+      const cv = document.getElementById('prCV').files[0];
+      if (!cv) {
+        document.getElementById('alertBox').innerHTML = '<div class="alert alert-error"><span>❌</span> CV upload is required.</div>';
+        return;
+      }
+      if (!document.getElementById('prTerms').checked) {
+        document.getElementById('alertBox').innerHTML = '<div class="alert alert-error"><span>❌</span> You must agree to the Provider Guidelines.</div>';
+        return;
+      }
+      formData.append('cv', cv);
+      formData.append('terms', '1');
+
+      const result = await apiPost('../backend/api/auth.php', formData);
+      if (!result.ok) {
+        document.getElementById('alertBox').innerHTML = `<div class="alert alert-error"><span>❌</span> ${escapeHTML(result.error || 'Provider registration failed')}</div>`;
+        return;
+      }
+      showToast(result.message || 'Application submitted!');
+      setTimeout(() => { window.location.href = 'provider-dashboard.html'; }, 700);
+    }
+  </script>
+  <script src="./splash.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Young Innovators Boxing Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: radial-gradient(circle at top, #27496d 0%, #102033 45%, #08111c 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-shell {
+            width: min(1200px, 100%);
+            background: linear-gradient(180deg, rgba(10, 16, 25, 0.92), rgba(5, 8, 14, 0.95));
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background: linear-gradient(90deg, rgba(0, 153, 255, 0.18), rgba(255, 59, 59, 0.18));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            opacity: 0.85;
+            font-size: 14px;
+        }
+
+        .hud {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .arena {
+            position: relative;
+            height: 460px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 18%, rgba(255, 255, 210, 0.2), transparent 20%),
+                linear-gradient(180deg, #2d3e50 0%, #1f2a36 30%, #182029 45%, #131820 100%);
+        }
+
+        .crowd {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 140px;
+            background:
+                radial-gradient(circle at 10% 50%, rgba(255, 255, 255, 0.08) 0 8px, transparent 9px),
+                radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.05) 0 10px, transparent 11px),
+                radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.07) 0 7px, transparent 8px),
+                radial-gradient(circle at 42% 45%, rgba(255, 255, 255, 0.06) 0 9px, transparent 10px),
+                radial-gradient(circle at 55% 55%, rgba(255, 255, 255, 0.07) 0 8px, transparent 9px),
+                radial-gradient(circle at 68% 45%, rgba(255, 255, 255, 0.05) 0 9px, transparent 10px),
+                radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.08) 0 7px, transparent 8px),
+                radial-gradient(circle at 92% 40%, rgba(255, 255, 255, 0.06) 0 9px, transparent 10px),
+                linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
+            filter: blur(1px);
+        }
+
+        .ring {
+            position: absolute;
+            left: 4%;
+            right: 4%;
+            bottom: 32px;
+            height: 250px;
+            border-radius: 24px;
+            background:
+                linear-gradient(180deg, #89a8c9 0%, #567a9c 100%);
+            box-shadow: inset 0 14px 30px rgba(255, 255, 255, 0.15), inset 0 -14px 30px rgba(0, 0, 0, 0.25);
+            border: 6px solid #d7e6f5;
+        }
+
+        .rope {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .rope.r1 {
+            top: 40px;
+            background: #ff4d4d;
+        }
+
+        .rope.r2 {
+            top: 80px;
+            background: #ffffff;
+        }
+
+        .rope.r3 {
+            top: 120px;
+            background: #2ea0ff;
+        }
+
+        .post {
+            position: absolute;
+            width: 18px;
+            height: 180px;
+            background: linear-gradient(180deg, #1b1b1b, #3e3e3e);
+            top: 26px;
+            border-radius: 8px;
+        }
+
+        .post.left {
+            left: 18px;
+        }
+
+        .post.right {
+            right: 18px;
+        }
+
+        .fighters {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            padding: 0 100px;
+            pointer-events: none;
+        }
+
+        .fighter-wrap {
+            width: 260px;
+            height: 300px;
+            position: relative;
+            transition: transform 0.25s ease;
+        }
+
+        .fighter-wrap.hit {
+            animation: shake 0.35s ease;
+        }
+
+        .fighter-wrap.knocked {
+            transform: translateY(22px) rotate(90deg) scale(0.9);
+            transform-origin: center bottom;
+            opacity: 0.9;
+        }
+
+        .fighter {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 280px;
+        }
+
+        .blue {
+            --main: #2f8fff;
+            --dark: #0c4a8f;
+            --skin: #f0c39b;
+        }
+
+        .red {
+            --main: #ff4b4b;
+            --dark: #9f1e1e;
+            --skin: #f2c19a;
+        }
+
+        .head {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 78px;
+            background: var(--skin);
+            border-radius: 38px;
+            border: 3px solid rgba(0, 0, 0, 0.18);
+            z-index: 3;
+        }
+
+        .hair {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 74px;
+            height: 34px;
+            background: #1c1c1c;
+            border-radius: 36px 36px 12px 12px;
+            z-index: 4;
+        }
+
+        .eye {
+            position: absolute;
+            top: 46px;
+            width: 8px;
+            height: 8px;
+            background: #1b1b1b;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        .eye.left {
+            left: 22px;
+        }
+
+        .eye.right {
+            right: 22px;
+        }
+
+        .mouth {
+            position: absolute;
+            top: 62px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 8px;
+            border-bottom: 3px solid #9d4d4d;
+            border-radius: 0 0 16px 16px;
+            z-index: 5;
+        }
+
+        .body {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 105px;
+            background: linear-gradient(180deg, var(--main), var(--dark));
+            border-radius: 26px 26px 18px 18px;
+            border: 3px solid rgba(255, 255, 255, 0.14);
+            z-index: 2;
+        }
+
+        .shorts {
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 48px;
+            background: linear-gradient(180deg, #fff, #d7d7d7);
+            border-radius: 10px 10px 16px 16px;
+            border: 3px solid rgba(0, 0, 0, 0.14);
+            z-index: 2;
+        }
+
+        .belt {
+            position: absolute;
+            top: 183px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 12px;
+            background: var(--main);
+            z-index: 3;
+            border-radius: 6px;
+        }
+
+        .arm {
+            position: absolute;
+            top: 108px;
+            width: 28px;
+            height: 92px;
+            background: var(--skin);
+            border-radius: 16px;
+            z-index: 1;
+            transform-origin: top center;
+            transition: transform 0.18s ease;
+        }
+
+        .arm.left {
+            left: 18px;
+            transform: rotate(18deg);
+        }
+
+        .arm.right {
+            right: 18px;
+            transform: rotate(-18deg);
+        }
+
+        .glove {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(180deg, var(--main), var(--dark));
+            border-radius: 50% 50% 48% 48%;
+            border: 2px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .leg {
+            position: absolute;
+            top: 220px;
+            width: 24px;
+            height: 68px;
+            background: var(--skin);
+            border-radius: 14px;
+            z-index: 1;
+        }
+
+        .leg.left {
+            left: 52px;
+        }
+
+        .leg.right {
+            right: 52px;
+        }
+
+        .shoe {
+            position: absolute;
+            bottom: -6px;
+            width: 40px;
+            height: 18px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 0, 0, 0.14);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .name-tag {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+
+        .fighter-wrap.player.punch .arm.right {
+            transform: rotate(-70deg) translate(14px, -4px);
+        }
+
+        .fighter-wrap.enemy.punch .arm.left {
+            transform: rotate(70deg) translate(-14px, -4px);
+        }
+
+        .panel {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 20px;
+            padding: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        }
+
+        .question-card,
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .question-number {
+            color: #8fd1ff;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.35;
+            margin-bottom: 18px;
+        }
+
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .answer-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(180deg, #27496d, #1b3048);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.2s ease;
+            min-height: 66px;
+        }
+
+        .answer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(180deg, #34618f, #23405f);
+        }
+
+        .answer-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .answer-btn.correct {
+            background: linear-gradient(180deg, #19b65b, #11813f);
+        }
+
+        .answer-btn.wrong {
+            background: linear-gradient(180deg, #df3a3a, #a12020);
+        }
+
+        .status-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .health-box {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .health-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .bar {
+            height: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+            width: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .fill.blue {
+            background: linear-gradient(90deg, #2ea0ff, #76c9ff);
+        }
+
+        .fill.red {
+            background: linear-gradient(90deg, #ff6161, #ff9f9f);
+        }
+
+        .message {
+            min-height: 78px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 14px;
+            font-size: 16px;
+            line-height: 1.45;
+        }
+
+        .restart-btn {
+            margin-top: 6px;
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #08111c;
+            background: linear-gradient(180deg, #ffd44d, #f2b603);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(4, 8, 14, 0.65);
+            z-index: 20;
+        }
+
+        .overlay.show {
+            display: flex;
+        }
+
+        .result-box {
+            width: min(520px, 92%);
+            background: linear-gradient(180deg, #152537, #0b131d);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .result-box h2 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        .result-box p {
+            margin: 0 0 20px;
+            opacity: 0.9;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            50% {
+                transform: translateX(10px);
+            }
+
+            75% {
+                transform: translateX(-8px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .panel {
+                grid-template-columns: 1fr;
+            }
+
+            .fighters {
+                padding: 0 24px;
+            }
+
+            .fighter-wrap {
+                width: 200px;
+                transform: scale(0.9);
+            }
+
+            .question-text {
+                font-size: 20px;
+            }
+
+            .answers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .arena {
+                height: 380px;
+            }
+
+            .fighters {
+                padding: 0 4px;
+            }
+
+            .fighter-wrap {
+                width: 160px;
+                transform: scale(0.72);
+            }
+
+            .topbar {
+                padding: 14px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+        }
+
+        #backBtn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+
+            padding: 12px 20px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #6C63FF;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ===== Private Multiplayer Lobby ===== */
+        .pregame-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(46, 160, 255, .35), transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 75, 75, .25), transparent 30%),
+                rgba(4, 8, 14, .94);
+        }
+
+        .pregame-overlay.hidden {
+            display: none;
+        }
+
+        .pregame-card {
+            width: min(720px, calc(100vw - 30px));
+            background: linear-gradient(180deg, #152537, #0b131d);
+            border: 1px solid rgba(255,255,255,.14);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 25px 80px rgba(0,0,0,.55);
+        }
+
+        .pregame-card h1 {
+            margin: 0 0 8px;
+            font-size: clamp(26px, 4vw, 40px);
+        }
+
+        .pregame-card p {
+            opacity: .86;
+            line-height: 1.5;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .mode-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 17px;
+        }
+
+        .mode-btn.friends {
+            background: linear-gradient(180deg, #bfdbfe, #60a5fa);
+        }
+
+        .room-panel {
+            display: none;
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.13);
+        }
+
+        .room-panel.active {
+            display: block;
+        }
+
+        .room-code {
+            display: inline-block;
+            margin: 8px 0;
+            padding: 10px 16px;
+            background: rgba(0,0,0,.35);
+            border-radius: 14px;
+            color: #a7f3d0;
+            font-weight: 900;
+            font-size: 30px;
+            letter-spacing: 6px;
+        }
+
+        .room-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .invite-input {
+            flex: 1;
+            min-width: 260px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.08);
+            color: white;
+        }
+
+        .player-list {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .player-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 12px;
+        }
+
+        .small-btn {
+            padding: 8px 11px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .danger-btn {
+            background: linear-gradient(180deg, #fecaca, #ef4444);
+            color: white;
+        }
+
+        .start-btn {
+            background: linear-gradient(180deg, #a7f3d0, #10b981);
+        }
+
+        .multiplayer-chip {
+            display: none;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .multiplayer-chip.active {
+            display: inline-flex;
+        }
+
+        @media (max-width: 700px) {
+            .mode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pregame-card {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="pregame-overlay" id="pregameOverlay">
+        <div class="pregame-card">
+            <h1>🥊 Boxing Quiz Battle</h1>
+            <p>
+                Choose how to play. <strong>Play Alone</strong> keeps the normal fight against the bot.
+                <strong>Play with Friends</strong> creates a private 1v1 room. First correct answer punches the other player. Win by reducing their chances to 0.
+            </p>
+
+            <div class="mode-grid" id="modeGrid">
+                <button class="mode-btn" onclick="startSinglePlayer()">🎮 Play Alone</button>
+                <button class="mode-btn friends" onclick="showFriendOptions()">👥 Play with Friends</button>
+            </div>
+
+            <div class="room-panel" id="friendOptionsPanel">
+                <h2 style="margin:0 0 8px;">Play with Friends</h2>
+                <p>Choose whether you want to create a new private room or join using a 6-digit code.</p>
+
+                <div class="mode-grid">
+                    <button class="mode-btn friends" onclick="createMultiplayerRoom()">➕ Create Room</button>
+                    <button class="mode-btn" onclick="showJoinRoomPanel()">🔢 Join Room</button>
+                </div>
+            </div>
+
+            <div class="room-panel" id="joinRoomPanel">
+                <h2 style="margin:0 0 8px;">Join Private Room</h2>
+                <p>Enter the 6-digit room code your friend shared.</p>
+
+                <div class="room-row">
+                    <input id="joinRoomCodeInput" class="invite-input" maxlength="6" placeholder="Enter 6-digit code">
+                    <button class="small-btn start-btn" onclick="joinRoomByCode()">Join Fight</button>
+                </div>
+            </div>
+
+            <div class="room-panel" id="roomPanel">
+                <h2 style="margin:0 0 8px;">Private Boxing Room</h2>
+                <p id="roomStatusText">Share the invite link or 6-digit code. Host starts when both players are ready.</p>
+
+                <div>
+                    <div style="font-size:13px;opacity:.75;">Room Code</div>
+                    <div class="room-code" id="displayRoomCode">000000</div>
+                </div>
+
+                <div class="room-row">
+                    <input id="inviteLinkInput" class="invite-input" readonly>
+                    <button class="small-btn" onclick="copyInviteLink()">Copy Link</button>
+                    <button class="small-btn" onclick="copyRoomCode()">Copy Code</button>
+                </div>
+
+                <div class="player-list" id="playerList"></div>
+
+                <div class="room-row">
+                    <button id="hostStartBtn" class="start-btn" onclick="hostStartGame()">Start Fight</button>
+                    <button class="danger-btn" onclick="leaveRoom()">Leave Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-shell">
+        <div class="topbar">
+            <div>
+                <div class="title">BOXING QUIZ BATTLE</div>
+                <div class="subtitle">Answer correctly to punch. In single player, fight the bot. In multiplayer, answer first to punch.</div>
+            </div>
+            <div class="hud">
+                <div class="badge" id="roundBadge">Question 1 / 3</div>
+                <div class="badge" id="scoreBadge">Score: 0</div>
+                <div class="multiplayer-chip" id="multiplayerChip">👥 Multiplayer</div>
+            </div>
+        </div>
+
+        <div class="arena">
+            <div class="crowd"></div>
+            <div class="ring">
+                <div class="post left"></div>
+                <div class="post right"></div>
+                <div class="rope r1"></div>
+                <div class="rope r2"></div>
+                <div class="rope r3"></div>
+            </div>
+
+            <div class="fighters">
+                <div class="fighter-wrap player" id="playerWrap">
+                    <div class="name-tag">BLUE BOXER</div>
+                    <div class="fighter blue">
+                        <div class="hair"></div>
+                        <div class="head">
+                            <div class="eye left"></div>
+                            <div class="eye right"></div>
+                            <div class="mouth"></div>
+                        </div>
+                        <div class="arm left">
+                            <div class="glove"></div>
+                        </div>
+                        <div class="arm right">
+                            <div class="glove"></div>
+                        </div>
+                        <div class="body"></div>
+                        <div class="shorts"></div>
+                        <div class="belt"></div>
+                        <div class="leg left">
+                            <div class="shoe"></div>
+                        </div>
+                        <div class="leg right">
+                            <div class="shoe"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fighter-wrap enemy" id="enemyWrap">
+                    <div class="name-tag">RED BOXER</div>
+                    <div class="fighter red">
+                        <div class="hair"></div>
+                        <div class="head">
+                            <div class="eye left"></div>
+                            <div class="eye right"></div>
+                            <div class="mouth"></div>
+                        </div>
+                        <div class="arm left">
+                            <div class="glove"></div>
+                        </div>
+                        <div class="arm right">
+                            <div class="glove"></div>
+                        </div>
+                        <div class="body"></div>
+                        <div class="shorts"></div>
+                        <div class="belt"></div>
+                        <div class="leg left">
+                            <div class="shoe"></div>
+                        </div>
+                        <div class="leg right">
+                            <div class="shoe"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overlay" id="resultOverlay">
+                <div class="result-box">
+                    <h2 id="resultTitle">You Win!</h2>
+                    <p id="resultText">Great job.</p>
+                    <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">QUESTION 1</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="answers" id="answersContainer"></div>
+
+                <div style="
+                    text-align:center;
+                    margin-top:15px;
+                ">
+                    <button class="restart-btn" onclick="skipQuestion()">
+                        💡 Teach Me
+                    </button>
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-grid">
+                    <div class="health-box">
+                        <div class="health-label"><span>Your chances</span><span id="playerHealthText">3 / 3</span>
+                        </div>
+                        <div class="bar">
+                            <div class="fill blue" id="playerHealthBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="health-box">
+                        <div class="health-label"><span>Opponent chances</span><span id="enemyHealthText">3 / 3</span></div>
+                        <div class="bar">
+                            <div class="fill red" id="enemyHealthBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="message" id="messageBox">
+                        Welcome to the ring. Answer the question to throw a punch.
+                    </div>
+
+                    <button class="restart-btn" onclick="restartGame()">Restart Match</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="goBackDashboard()" id="backBtn">
+        ⬅ Dashboard
+    </button>
+
+    <script>
+        let questions = [];
+
+        let currentQuestion = 0;
+        let playerHealth = 10;
+        let enemyHealth = 10;
+        let score = 0;
+        let locked = false;
+
+        const questionText = document.getElementById('questionText');
+        const answersContainer = document.getElementById('answersContainer');
+        const questionNumber = document.getElementById('questionNumber');
+        const roundBadge = document.getElementById('roundBadge');
+        const scoreBadge = document.getElementById('scoreBadge');
+        const playerHealthText = document.getElementById('playerHealthText');
+        const enemyHealthText = document.getElementById('enemyHealthText');
+        const playerHealthBar = document.getElementById('playerHealthBar');
+        const enemyHealthBar = document.getElementById('enemyHealthBar');
+        const messageBox = document.getElementById('messageBox');
+        const playerWrap = document.getElementById('playerWrap');
+        const enemyWrap = document.getElementById('enemyWrap');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultText = document.getElementById('resultText');
+
+        async function showAchievement(title, xp) {
+
+            alert(
+                `🎉 Achievement Unlocked!\n\n${title}\n⭐ +${xp} XP`
+            );
+
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let cell = "";
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const next = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && next === '"') {
+                        cell += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === "," && !inQuotes) {
+                    row.push(cell);
+                    cell = "";
+                } else if ((char === "\n" || char === "\r") && !inQuotes) {
+                    if (char === "\r" && next === "\n") i++;
+                    row.push(cell);
+                    if (row.some(v => v.trim() !== "")) rows.push(row);
+                    row = [];
+                    cell = "";
+                } else {
+                    cell += char;
+                }
+            }
+
+            if (cell.length > 0 || row.length > 0) {
+                row.push(cell);
+                if (row.some(v => v.trim() !== "")) rows.push(row);
+            }
+
+            return rows;
+        }
+
+        function csvRowsToObjects(rows) {
+            const headers = rows[0].map(h => h.trim().toLowerCase());
+            const data = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = (rows[i][j] ?? "").trim();
+                }
+                data.push(obj);
+            }
+            return data;
+        }
+
+        async function loadQuestionsFromCSV() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+
+                const csvFile =
+                    params.get('csv') || 'boxing.csv';
+
+                const res = await fetch(
+                    '../generated/' +
+                    csvFile +
+                    '?v=' +
+                    Date.now()
+                );
+                const text = await res.text();
+
+                const parsed = parseCSV(text);
+                const data = csvRowsToObjects(parsed);
+
+                const normalized = data.map(row => {
+                    const options = [
+                        row.option1,
+                        row.option2,
+                        row.option3,
+                        row.option4
+                    ].filter(Boolean);
+
+                    return {
+                        question: row.question || "",
+                        correct: (row.answer || "").trim(),
+                        hint: row.hint || "",
+                        options
+                    };
+                }).filter(q => q.question && q.correct);
+
+                if (!normalized.length) {
+                    messageBox.textContent = "CSV is empty or invalid.";
+                    return;
+                }
+
+                questions = normalized.map((q, index) => {
+                    let choices = [];
+
+                    if (q.options && q.options.length >= 2) {
+                        choices = q.options.slice(0, 4);
+                    } else {
+                        const wrongPool = normalized
+                            .filter((_, i) => i !== index)
+                            .map(x => x.correct)
+                            .filter(Boolean);
+
+                        const uniqueWrong = [...new Set(wrongPool)].filter(x => x !== q.correct);
+                        const wrongChoices = uniqueWrong.slice(0, 3);
+                        choices = [q.correct, ...wrongChoices];
+
+                        while (choices.length < 4) {
+                            choices.push("Not sure");
+                        }
+                    }
+
+                    if (!choices.includes(q.correct)) {
+                        choices[0] = q.correct;
+                    }
+
+                    for (let i = choices.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [choices[i], choices[j]] = [choices[j], choices[i]];
+                    }
+
+                    return {
+                        question: q.question,
+                        answers: choices,
+                        correct: q.correct,
+                        hint: q.hint
+                    };
+                });
+
+                messageBox.textContent = "Welcome to the ring.";
+                renderQuestion();
+            } catch (err) {
+                console.error(err);
+                messageBox.textContent = "Could not load boxing CSV.";
+            }
+        }
+
+        function updateHud() {
+            roundBadge.textContent = `Question ${Math.min(currentQuestion + 1, Math.max(questions.length, 1))} / ${questions.length}`;
+            scoreBadge.textContent = `Score: ${score}`;
+            playerHealthText.textContent = `${playerHealth} / 10`;
+            enemyHealthText.textContent = `${enemyHealth} / 10`;
+            playerHealthBar.style.width = `${(playerHealth / 10) * 100}%`;
+            enemyHealthBar.style.width = `${(enemyHealth / 10) * 100}%`;
+        }
+
+        function renderQuestion() {
+            if (!questions.length) {
+                questionNumber.textContent = "QUESTION";
+                questionText.textContent = "No questions loaded yet.";
+                answersContainer.innerHTML = "";
+                updateHud();
+                return;
+            }
+
+            if (currentQuestion >= questions.length || playerHealth <= 0 || enemyHealth <= 0) {
+                finishGame();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+            questionNumber.textContent = `QUESTION ${currentQuestion + 1}`;
+            questionText.textContent = q.question;
+            answersContainer.innerHTML = '';
+            locked = false;
+
+            q.answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => handleAnswer(btn, answer);
+                answersContainer.appendChild(btn);
+            });
+
+            updateHud();
+        }
+
+        function disableAnswers() {
+            [...answersContainer.children].forEach(btn => btn.disabled = true);
+        }
+
+        function animatePunch(attacker, defender) {
+            attacker.classList.add('punch');
+            defender.classList.add('hit');
+            setTimeout(() => attacker.classList.remove('punch'), 260);
+            setTimeout(() => defender.classList.remove('hit'), 380);
+        }
+
+
+        function getOpponentName() {
+            const opponent = gameRoomState.players.find(
+                p => Number(p.user_id) !== Number(gameRoomState.selfUserId)
+            );
+            return opponent?.display_name || "Opponent";
+        }
+
+        function getSelfAnswerWins() {
+            return (gameRoomState.boxingAnswers || []).filter(
+                a => Number(a.user_id) === Number(gameRoomState.selfUserId)
+            ).length;
+        }
+
+        function getOpponentAnswerWins() {
+            return (gameRoomState.boxingAnswers || []).filter(
+                a => Number(a.user_id) !== Number(gameRoomState.selfUserId)
+            ).length;
+        }
+
+        function applyMultiplayerHealthFromAnswers() {
+            if (gameRoomState.mode !== "multi") return;
+
+            const selfWins = getSelfAnswerWins();
+            const opponentWins = getOpponentAnswerWins();
+
+            score = selfWins;
+            enemyHealth = Math.max(0, 10 - selfWins);
+            playerHealth = Math.max(0, 10 - opponentWins);
+
+            updateHud();
+        }
+
+        function getBoxingAnswerForQuestion(questionIndex) {
+            const roomNumber = questionIndex + 1;
+            return (gameRoomState.boxingAnswers || []).find(
+                a => Number(a.room_number) === Number(roomNumber)
+            );
+        }
+
+        function goToNextMultiplayerQuestion() {
+            if (playerHealth <= 0 || enemyHealth <= 0) return;
+
+            currentQuestion++;
+
+            if (currentQuestion >= questions.length) {
+                finishGame();
+                return;
+            }
+
+            locked = false;
+            renderQuestion();
+        }
+
+        async function handleAnswer(button, selected) {
+            if (locked) return;
+            locked = true;
+            disableAnswers();
+
+            const q = questions[currentQuestion];
+            const buttons = [...answersContainer.children];
+            const correctButton = buttons.find(btn => btn.textContent === q.correct);
+            const isCorrect = selected === q.correct;
+
+            if (gameRoomState.mode === "multi" && gameRoomState.roomCode) {
+                if (!isCorrect) {
+                    button.classList.add('wrong');
+                    if (correctButton) correctButton.classList.add('correct');
+                    messageBox.textContent = `Wrong! The correct answer was "${q.correct}". Try to be faster next question.`;
+                    setTimeout(() => {
+                        locked = false;
+                        [...answersContainer.children].forEach(btn => {
+                            btn.disabled = false;
+                            btn.classList.remove('wrong', 'correct');
+                        });
+                    }, 900);
+                    return;
+                }
+
+                button.classList.add('correct');
+                if (correctButton) correctButton.classList.add('correct');
+                messageBox.textContent = "Correct! Checking who answered first...";
+
+                try {
+                    await apiPostRoom("boxing_answer", {
+                        room_code: gameRoomState.roomCode,
+                        question_index: currentQuestion,
+                        is_correct: "1"
+                    });
+
+                    await refreshRoomStatus();
+
+                } catch (err) {
+                    alert("Multiplayer answer failed: " + err.message);
+                    locked = false;
+                    [...answersContainer.children].forEach(btn => btn.disabled = false);
+                }
+
+                return;
+            }
+
+            if (isCorrect) {
+                score++;
+                enemyHealth--;
+                button.classList.add('correct');
+                if (correctButton) correctButton.classList.add('correct');
+                messageBox.textContent = 'Correct! Blue boxer lands a strong punch on the red bot.';
+                animatePunch(playerWrap, enemyWrap);
+            } else {
+                playerHealth--;
+                button.classList.add('wrong');
+                if (correctButton) correctButton.classList.add('correct');
+                messageBox.textContent = `Wrong! The correct answer was "${q.correct}". Red bot punches back.`;
+                animatePunch(enemyWrap, playerWrap);
+            }
+
+            updateHud();
+
+            setTimeout(() => {
+                currentQuestion++;
+                renderQuestion();
+            }, 1200);
+        }
+
+        async function finishGame() {
+
+            locked = true;
+            answersContainer.innerHTML = '';
+
+            if (enemyHealth <= 0 || score >= Math.ceil(questions.length / 2)) {
+
+                enemyWrap.classList.add('knocked');
+
+                resultTitle.textContent =
+                    'BLUE BOXER WINS!';
+
+                resultText.textContent =
+                    `You knocked down the opponent. Final score: ${score}/${questions.length}.`;
+
+                messageBox.textContent =
+                    'Victory! The red bot is knocked down.';
+
+                await saveGameProgress();
+                await saveAnalytics(100, 1);
+
+                await showAchievement(
+                    'Boxing Champion',
+                    100
+                );
+
+                window.location.href =
+                    '../frontend/student-dashboard.html';
+
+            } else {
+
+                playerWrap.classList.add('knocked');
+
+                resultTitle.textContent =
+                    'RED BOXER WINS!';
+
+                resultText.textContent =
+                    `You got knocked down. Final score: ${score}/${questions.length}.`;
+
+                messageBox.textContent =
+                    'Defeat. The red bot knocked your boxer down.';
+
+            }
+
+            updateHud();
+
+            resultOverlay.classList.add('show');
+        }
+
+        function restartGame() {
+            if (gameRoomState.mode === 'multi') {
+                window.location.href = '../frontend/student-dashboard.html';
+                return;
+            }
+
+            currentQuestion = 0;
+            playerHealth = 3;
+            enemyHealth = 3;
+            score = 0;
+            locked = false;
+            playerWrap.classList.remove('knocked', 'hit', 'punch');
+            enemyWrap.classList.remove('knocked', 'hit', 'punch');
+            resultOverlay.classList.remove('show');
+            messageBox.textContent = 'Welcome to the ring. Answer the question to throw a punch.';
+            renderQuestion();
+        }
+
+        /* ===== Real private boxing room logic ===== */
+        const gameRoomState = {
+            mode: "single",
+            roomCode: null,
+            isHost: false,
+            players: [],
+            boxingAnswers: [],
+            processedQuestions: {},
+            pollTimer: null,
+            selfUserId: null
+        };
+
+        function getCurrentGamePage() {
+            return window.location.pathname.split("/").pop() || "BoxingGame.html";
+        }
+
+        function getCSVFile() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("csv") || "boxing.csv";
+        }
+
+        function getCourseId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("course_id") || "";
+        }
+
+        function buildInviteURL(code) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("room", code);
+            url.searchParams.set("mode", "multi");
+            return url.toString();
+        }
+
+        async function apiPostRoom(action, data) {
+            const body = new URLSearchParams(data || {});
+            body.set("action", action);
+
+            const res = await fetch("../backend/api/rooms.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                credentials: "include",
+                body
+            });
+
+            const json = await res.json();
+
+            if (!json.ok) {
+                throw new Error(json.error || "Room request failed");
+            }
+
+            return json;
+        }
+
+        async function apiGetRoom(action, params = {}) {
+            const url = new URL("../backend/api/rooms.php", window.location.href);
+            url.searchParams.set("action", action);
+
+            Object.entries(params).forEach(([key, value]) => {
+                url.searchParams.set(key, value);
+            });
+
+            const res = await fetch(url.toString(), {
+                credentials: "include"
+            });
+
+            const json = await res.json();
+
+            if (!json.ok) {
+                throw new Error(json.error || "Room request failed");
+            }
+
+            return json;
+        }
+
+        function renderPlayers() {
+            const list = document.getElementById("playerList");
+            if (!list) return;
+
+            if (!gameRoomState.players.length) {
+                list.innerHTML = '<div class="player-card"><span>No players yet.</span></div>';
+                return;
+            }
+
+            list.innerHTML = gameRoomState.players.map(player => {
+                const hostBadge = Number(player.is_host) === 1 ? " 👑 Host" : "";
+                const kickedText = Number(player.is_kicked) === 1 ? " — knocked out" : "";
+                const kickButton =
+                    gameRoomState.isHost &&
+                    Number(player.is_host) !== 1 &&
+                    Number(player.is_kicked) !== 1
+                        ? `<button class="small-btn danger-btn" onclick="kickPlayer(${Number(player.user_id)})">Kick</button>`
+                        : "";
+
+                return `
+                    <div class="player-card">
+                        <span>🥊 ${player.display_name || "Player"}${hostBadge}${kickedText}</span>
+                        ${kickButton}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function startSinglePlayer() {
+            gameRoomState.mode = "single";
+            if (gameRoomState.pollTimer) {
+                clearInterval(gameRoomState.pollTimer);
+                gameRoomState.pollTimer = null;
+            }
+
+            document.getElementById("pregameOverlay").classList.add("hidden");
+            messageBox.textContent = "Single player started. Fight the red bot!";
+        }
+
+        function showFriendOptions() {
+            const friendPanel = document.getElementById("friendOptionsPanel");
+            const joinPanel = document.getElementById("joinRoomPanel");
+            const roomPanel = document.getElementById("roomPanel");
+
+            if (friendPanel) friendPanel.classList.add("active");
+            if (joinPanel) joinPanel.classList.remove("active");
+            if (roomPanel) roomPanel.classList.remove("active");
+        }
+
+        function showJoinRoomPanel() {
+            const joinPanel = document.getElementById("joinRoomPanel");
+            const roomPanel = document.getElementById("roomPanel");
+
+            if (joinPanel) joinPanel.classList.add("active");
+            if (roomPanel) roomPanel.classList.remove("active");
+
+            const input = document.getElementById("joinRoomCodeInput");
+            if (input) input.focus();
+        }
+
+        function joinRoomByCode() {
+            const input = document.getElementById("joinRoomCodeInput");
+            const code = (input?.value || "").trim();
+
+            if (!/^\d{6}$/.test(code)) {
+                alert("Please enter a valid 6-digit room code.");
+                return;
+            }
+
+            const url = new URL(window.location.href);
+            url.searchParams.set("room", code);
+            url.searchParams.set("mode", "multi");
+            window.location.href = url.toString();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const joinInput = document.getElementById("joinRoomCodeInput");
+            if (joinInput) {
+                joinInput.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter") {
+                        joinRoomByCode();
+                    }
+                });
+            }
+        });
+
+        async function createMultiplayerRoom() {
+            try {
+                document.getElementById("friendOptionsPanel")?.classList.remove("active");
+                document.getElementById("joinRoomPanel")?.classList.remove("active");
+                document.getElementById("roomPanel").classList.add("active");
+                document.getElementById("roomStatusText").textContent = "Creating private room...";
+
+                const result = await apiPostRoom("create", {
+                    game_page: getCurrentGamePage(),
+                    csv_file: getCSVFile(),
+                    course_id: getCourseId()
+                });
+
+                gameRoomState.mode = "multi";
+                gameRoomState.roomCode = result.room_code;
+                gameRoomState.isHost = true;
+
+                document.getElementById("displayRoomCode").textContent = result.room_code;
+                document.getElementById("inviteLinkInput").value = buildInviteURL(result.room_code);
+                document.getElementById("roomStatusText").textContent =
+                    "You are the host. Share this link. The fight is 1v1 only.";
+
+                document.getElementById("hostStartBtn").style.display = "inline-block";
+
+                await refreshRoomStatus();
+                startRoomPolling();
+            } catch (err) {
+                alert("Could not create room: " + err.message);
+            }
+        }
+
+        async function joinRoomFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get("room");
+            const mode = params.get("mode");
+
+            if (!code || mode !== "multi") return;
+
+            try {
+                gameRoomState.mode = "multi";
+                gameRoomState.roomCode = code;
+                gameRoomState.isHost = false;
+
+                document.getElementById("friendOptionsPanel")?.classList.remove("active");
+                document.getElementById("joinRoomPanel")?.classList.remove("active");
+                document.getElementById("roomPanel").classList.add("active");
+                document.getElementById("displayRoomCode").textContent = code;
+                document.getElementById("inviteLinkInput").value = window.location.href;
+                document.getElementById("roomStatusText").textContent = "Joining private room...";
+
+                const startBtn = document.getElementById("hostStartBtn");
+                if (startBtn) startBtn.style.display = "none";
+
+                await apiPostRoom("join", {
+                    room_code: code
+                });
+
+                document.getElementById("roomStatusText").textContent =
+                    "Joined. Wait for the host to start.";
+
+                await refreshRoomStatus();
+                startRoomPolling();
+
+            } catch (err) {
+                if (String(err.message).toLowerCase().includes("not authenticated")) {
+                    const returnUrl = encodeURIComponent(window.location.href);
+                    window.location.href = "../frontend/login.html?return=" + returnUrl;
+                    return;
+                }
+
+                alert("Could not join room: " + err.message);
+            }
+        }
+
+        async function refreshRoomStatus() {
+            if (!gameRoomState.roomCode) return;
+
+            try {
+                const result = await apiGetRoom("boxing_state", {
+                    room_code: gameRoomState.roomCode
+                });
+
+                gameRoomState.players = (result.players || []).slice(0, 2);
+                gameRoomState.boxingAnswers = result.answers || [];
+
+                if (result.current_user_id) {
+                    gameRoomState.selfUserId = Number(result.current_user_id);
+                }
+
+                renderPlayers();
+                applyMultiplayerHealthFromAnswers();
+
+                const roomData = result.room || {};
+
+                if (roomData.status === "started") {
+                    document.getElementById("pregameOverlay").classList.add("hidden");
+                    const chip = document.getElementById("multiplayerChip");
+                    if (chip) {
+                        chip.classList.add("active");
+                        chip.textContent = "👥 Room " + gameRoomState.roomCode;
+                    }
+
+                    if (!gameRoomState.startedMessageShown) {
+                        gameRoomState.startedMessageShown = true;
+                        messageBox.textContent =
+                            "Multiplayer fight started. First correct answer punches the other boxer.";
+                    }
+                }
+
+                const currentAnswer = getBoxingAnswerForQuestion(currentQuestion);
+
+                if (currentAnswer && !gameRoomState.processedQuestions[currentQuestion]) {
+                    gameRoomState.processedQuestions[currentQuestion] = true;
+
+                    const winnerIsMe =
+                        Number(currentAnswer.user_id) === Number(gameRoomState.selfUserId);
+
+                    locked = true;
+                    disableAnswers();
+
+                    if (winnerIsMe) {
+                        messageBox.textContent =
+                            "🥊 You answered first! You punched " + getOpponentName() + ".";
+                        animatePunch(playerWrap, enemyWrap);
+                    } else {
+                        messageBox.textContent =
+                            "🥊 " + (currentAnswer.display_name || "Opponent") +
+                            " answered first and punched you.";
+                        animatePunch(enemyWrap, playerWrap);
+                    }
+
+                    applyMultiplayerHealthFromAnswers();
+
+                    if (playerHealth <= 0) {
+                        setTimeout(() => finishMultiplayerLose(currentAnswer.display_name || "Opponent"), 900);
+                        return;
+                    }
+
+                    if (enemyHealth <= 0) {
+                        setTimeout(() => finishMultiplayerWin(), 900);
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        goToNextMultiplayerQuestion();
+                    }, 1400);
+                }
+
+            } catch (err) {
+                console.warn("Room status error:", err.message);
+            }
+        }
+
+        function startRoomPolling() {
+            if (gameRoomState.pollTimer) clearInterval(gameRoomState.pollTimer);
+            gameRoomState.pollTimer = setInterval(refreshRoomStatus, 1500);
+        }
+
+        async function copyInviteLink() {
+            const input = document.getElementById("inviteLinkInput");
+            input.select();
+            input.setSelectionRange(0, 99999);
+
+            try {
+                await navigator.clipboard.writeText(input.value);
+                alert("Invite link copied!");
+            } catch (_) {
+                alert("Copy this invite link:\\n" + input.value);
+            }
+        }
+
+        async function copyRoomCode() {
+            const code = gameRoomState.roomCode || document.getElementById("displayRoomCode").textContent;
+            try {
+                await navigator.clipboard.writeText(code);
+                alert("Room code copied!");
+            } catch (_) {
+                alert("Room code: " + code);
+            }
+        }
+
+        async function kickPlayer(userId) {
+            if (!gameRoomState.isHost || !gameRoomState.roomCode) return;
+
+            try {
+                await apiPostRoom("kick", {
+                    room_code: gameRoomState.roomCode,
+                    target_user_id: userId
+                });
+                await refreshRoomStatus();
+            } catch (err) {
+                alert("Could not kick player: " + err.message);
+            }
+        }
+
+        async function leaveRoom() {
+            try {
+                if (gameRoomState.roomCode) {
+                    await apiPostRoom("leave", {
+                        room_code: gameRoomState.roomCode
+                    });
+                }
+            } catch (_) {}
+
+            window.location.href = "../frontend/student-dashboard.html";
+        }
+
+        async function hostStartGame() {
+            if (!gameRoomState.isHost || !gameRoomState.roomCode) return;
+
+            if (gameRoomState.players.length < 2) {
+                alert("Wait for one friend to join first.");
+                return;
+            }
+
+            try {
+                await apiPostRoom("start", {
+                    room_code: gameRoomState.roomCode
+                });
+
+                document.getElementById("pregameOverlay").classList.add("hidden");
+                const chip = document.getElementById("multiplayerChip");
+                if (chip) {
+                    chip.classList.add("active");
+                    chip.textContent = "👥 Room " + gameRoomState.roomCode;
+                }
+
+                messageBox.textContent =
+                    "Multiplayer fight started. First correct answer punches the opponent.";
+            } catch (err) {
+                alert("Could not start fight: " + err.message);
+            }
+        }
+
+        async function finishMultiplayerWin() {
+            if (resultOverlay.classList.contains("show")) return;
+
+            locked = true;
+            enemyHealth = 0;
+            enemyWrap.classList.add('knocked');
+
+            resultTitle.textContent = 'YOU WIN!';
+            resultText.textContent =
+                'You won the boxing match. Final score: ' + score + '.';
+
+            messageBox.textContent = 'Victory! You knocked out the other boxer.';
+
+            await saveGameProgress();
+            await saveAnalytics(100, 1);
+            await showAchievement('Boxing Champion', 100);
+
+            updateHud();
+            resultOverlay.classList.add('show');
+        }
+
+        function finishMultiplayerLose(winnerName) {
+            if (resultOverlay.classList.contains("show")) return;
+
+            locked = true;
+            playerHealth = 0;
+            playerWrap.classList.add('knocked');
+
+            resultTitle.textContent = 'KNOCKED OUT!';
+            resultText.textContent =
+                (winnerName || 'The other player') +
+                ' won the boxing match.';
+
+            messageBox.textContent = 'You were knocked out in multiplayer.';
+            updateHud();
+            resultOverlay.classList.add('show');
+        }
+
+        joinRoomFromURL();
+
+
+        updateHud();
+        loadQuestionsFromCSV();
+
+        function goBackDashboard() {
+            window.location.href =
+                '../frontend/student-dashboard.html';
+        }
+
+        async function saveGameProgress() {
+            const params = new URLSearchParams(window.location.search);
+            const courseId = params.get('course_id');
+
+            if (!courseId) return;
+
+            await fetch('../backend/api/complete_game.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                credentials: 'same-origin',
+                body: new URLSearchParams({
+                    course_id: courseId
+                })
+            });
+        }
+
+        async function saveAnalytics(score = 100, completed = 1) {
+
+            const params =
+                new URLSearchParams(window.location.search);
+
+            const courseId =
+                params.get('course_id');
+
+            if (!courseId) return;
+
+            await fetch(
+                '../backend/api/save_game_analytics.php',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':
+                            'application/x-www-form-urlencoded'
+                    },
+                    credentials: 'include',
+                    body:
+                        'course_id=' + courseId +
+                        '&score=' + score +
+                        '&completed=' + completed
+                }
+            );
+        }
+
+        function skipQuestion() {
+
+            const q = questions[currentQuestion];
+
+            alert(
+                "Correct Answer:\n\n" +
+                q.correct
+            );
+
+            playerHealth--;
+
+            updateHud();
+
+            if (playerHealth <= 0) {
+                finishGame();
+                return;
+            }
+
+            currentQuestion++;
+
+            renderQuestion();
+        }
+    </script>
+</body>
+
+</html>

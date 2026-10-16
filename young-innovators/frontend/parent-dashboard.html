@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Parent Dashboard - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="#" onclick="showSection('overview')">
+          Dashboard
+        </a>
+        <a href="browse-courses.html">Courses</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <button class="btn btn-sm" style="background:var(--gradient-accent);color:white"
+          onclick="logout()">Logout</button>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="avatar avatar-xl" id="parentAvatar" style="background:var(--gradient-secondary);margin:0 auto 12px">
+          P </div>
+        <h3 style="font-size:1.1rem"><span id="parentName">Parent</span></h3>
+        <div class="chip chip-primary" style="margin-top:4px">👨‍👩‍👧 Parent Account</div>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#overview" class="active" onclick="showParentSection('overview')"><span class="menu-icon">🏠</span>
+          Overview</a>
+        <a href="#children" onclick="showParentSection('children')"><span class="menu-icon">👧</span> My Children</a>
+        <a href="#addchild" onclick="showParentSection('addchild')"><span class="menu-icon">➕</span> Add Child</a>
+        <a href="#progress" onclick="showParentSection('progress')"><span class="menu-icon">📊</span> Progress</a>
+        <a href="#chat" onclick="showParentSection('chat')"><span class="menu-icon">💬</span> Parent Chat</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <!-- Overview -->
+      <div id="psection-overview">
+        <div class="dashboard-header">
+          <div>
+            <h1>Welcome, <span class="text-gradient" id="parentWelcomeName">Parent</span>! 👋</h1>
+            <p class="welcome-text">Monitor your children's learning progress</p>
+          </div>
+          <button class="btn btn-primary" onclick="showParentSection('addchild')">+ Add Child</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card card-gradient" style="background:var(--gradient-primary)">
+            <div class="stat-icon">👧</div>
+            <div class="stat-value" id="childCount">0</div>
+            <div class="stat-label">Children Linked</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-secondary)">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value" id="parentTotalCourses">0</div>
+            <div class="stat-label">Total Courses</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-success)">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="parentTotalXP">0</div>
+            <div class="stat-label">Total XP Earned</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-warm)">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="parentTotalBadges">0</div>
+            <div class="stat-label">Badges Earned</div>
+          </div>
+        </div>
+
+        <!-- Children Overview Cards -->
+        <h3 style="margin-bottom:16px">Your Children</h3>
+        <div class="grid-2" id="childrenOverview"></div>
+
+        <!-- Recent Activity -->
+        <h3 style="margin:24px 0 16px">Recent Activity</h3>
+        <div class="card" style="padding:0">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Child</th>
+                  <th>Activity</th>
+                  <th>XP Earned</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="recentActivityBody">
+                <tr>
+                  <td colspan="4" style="color:var(--text-secondary)">No recent activity yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Children List -->
+      <div id="psection-children" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>My Children 👧</h1>
+            <p class="welcome-text">Manage your children's accounts</p>
+          </div>
+          <button class="btn btn-primary" onclick="showParentSection('addchild')">+ Add Child</button>
+        </div>
+
+        <div id="childrenList"></div>
+      </div>
+
+      <!-- Add Child -->
+      <div id="psection-addchild" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Add Child Account ➕</h1>
+            <p class="welcome-text">Create a new student account for your child</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:32px;max-width:600px">
+          <div id="addChildAlert"></div>
+          <form onsubmit="handleAddChild(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Child's First Name</label>
+                <input type="text" class="form-control" id="childFirstName" placeholder="Emma" required>
+              </div>
+              <div class="form-group">
+                <label>Child's Last Name</label>
+                <input type="text" class="form-control" id="childLastName" placeholder="Junior" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Username (for login)</label>
+              <input type="text" class="form-control" id="childUsername" placeholder="Choose a unique username"
+                required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Password</label>
+
+                <div class="password-wrapper">
+
+                  <input type="password" class="form-control" id="childPassword" placeholder="Create a strong password"
+                    pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$" required minlength="8">
+
+                  <button type="button" class="toggle-password" onclick="togglePassword('childPassword', this)"
+                    aria-label="Show password">
+
+                    <i class="fa-solid fa-eye"></i>
+
+                  </button>
+
+                </div>
+              </div>
+              <div id="passwordRequirements" style="
+                  margin-top:8px;
+                  font-size:0.85rem;
+                  color:#666;
+              ">
+                <div id="reqLength">❌ At least 8 characters</div>
+                <div id="reqUpper">❌ One uppercase letter</div>
+                <div id="reqLower">❌ One lowercase letter</div>
+                <div id="reqNumber">❌ One number</div>
+                <div id="reqSpecial">❌ One special character</div>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" class="form-control" id="childBirthdate" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Interests (select all that apply)</label>
+              <div class="interest-grid" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px">
+                <div class="interest-item" data-interest="Math" onclick="toggleChildInterest(this)"
+                  style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">🔢</div>
+                  <div class="interest-name" style="font-size:0.85rem">Math</div>
+                </div>
+                <div class="interest-item" data-interest="Science" onclick="toggleChildInterest(this)"
+                  style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">🔬</div>
+                  <div class="interest-name" style="font-size:0.85rem">Science</div>
+                </div>
+                <div class="interest-item" data-interest="Coding" onclick="toggleChildInterest(this)"
+                  style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">💻</div>
+                  <div class="interest-name" style="font-size:0.85rem">Coding</div>
+                </div>
+                <div class="interest-item" data-interest="Reading" onclick="toggleChildInterest(this)"
+                  style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">📖</div>
+                  <div class="interest-name" style="font-size:0.85rem">Reading</div>
+                </div>
+                <div class="interest-item" data-interest="Music" onclick="toggleChildInterest(this)"
+                  style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">🎵</div>
+                  <div class="interest-name" style="font-size:0.85rem">Music</div>
+                </div>
+                <div class="interest-item" data-interest="Art" onclick="toggleChildInterest(this)" style="padding:12px">
+                  <div class="interest-icon" style="font-size:1.5rem">🎨</div>
+                  <div class="interest-name" style="font-size:0.85rem">Art</div>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-info" style="font-size:0.85rem">
+              <span>ℹ️</span>
+              <span>Your child will log in using their username and password. All notifications will be sent to your
+                email.</span>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Create Child Account
+              🎓</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div id="psection-progress" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Progress Tracking 📊</h1>
+            <p class="welcome-text">Real progress will appear after your children enroll and complete courses.</p>
+          </div>
+        </div>
+        <div class="card" style="padding:24px;margin-bottom:24px">
+          <h3 style="margin-bottom:16px">Recent Student Activity</h3>
+          <div id="pendingEnrollments">
+            Loading activity...
+          </div>
+        </div>
+        <div class="card" style="padding:24px">
+          <h3 style="margin-bottom:8px">Course Progress</h3>
+          <div id="parentProgressContainer">
+
+            <p style="color:var(--text-secondary)">
+              Loading progress...
+            </p>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Parent Chat -->
+      <div id="psection-chat" style="display:none">
+
+        <div class="dashboard-header">
+          <div>
+            <h1>Parent Learning Communities 💬</h1>
+            <p class="welcome-text">
+              Connect with parents whose children are enrolled in the same courses.
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:20px;height:600px">
+
+          <div class="card" style="width:280px;padding:16px">
+            <h3 style="margin-bottom:12px">
+              Course Communities
+            </h3>
+
+            <div id="parentChatRooms">
+              Loading...
+            </div>
+          </div>
+
+          <div class="card" style="flex:1;padding:0;display:flex;flex-direction:column">
+
+            <div id="parentChatMessages" style="flex:1;padding:20px;overflow-y:auto">
+
+              Select a community.
+
+            </div>
+
+            <div class="chat-input">
+
+              <input type="text" id="parentChatInput" placeholder="Share with other parents...">
+
+              <button class="btn btn-primary btn-sm" onclick="sendParentChat()">
+
+                Send
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <script src="./script.js"></script>
+      <script src="./security.js"></script>
+      <script>
+        async function loadParentProgress() {
+
+          const result = await apiGet(
+            '../backend/api/parent-progress.php'
+          );
+
+          const container =
+            document.getElementById(
+              'parentProgressContainer'
+            );
+
+          if (
+            !result.ok ||
+            !result.courses ||
+            !result.courses.length
+          ) {
+
+            container.innerHTML = `
+      <p style="color:var(--text-secondary)">
+        No course progress yet.
+      </p>
+    `;
+
+            return;
+          }
+
+          container.innerHTML =
+            result.courses.map(course => `
+
+      <div style="margin-bottom:20px">
+
+        <div class="xp-label">
+
+          <span>
+            ${escapeHTML(course.student_name)}
+            —
+            ${escapeHTML(course.title)}
+          </span>
+
+          <span>
+            ${Number(course.progress || 0)}%
+          </span>
+
+        </div>
+
+        <div class="xp-bar-container"
+             style="height:10px">
+
+          <div class="xp-bar"
+               style="width:${Number(course.progress || 0)}%">
+          </div>
+
+        </div>
+
+      </div>
+
+    `).join('');
+        }
+
+        function togglePassword(inputId, button) {
+
+          const input = document.getElementById(inputId);
+          const icon = button.querySelector('i');
+
+          if (input.type === 'password') {
+
+            input.type = 'text';
+
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+
+          } else {
+
+            input.type = 'password';
+
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        }
+
+        function showParentSection(name) {
+
+          document.querySelectorAll('[id^="psection-"]')
+            .forEach(s => s.style.display = 'none');
+
+          document.getElementById(
+            'psection-' + name
+          ).style.display = 'block';
+
+          document.querySelectorAll('.sidebar-menu a')
+            .forEach(a => a.classList.remove('active'));
+
+          document.querySelector(
+            `.sidebar-menu a[href="#${name}"]`
+          )?.classList.add('active');
+
+          if (name === 'progress') {
+            loadParentProgress();
+            loadProgressActivity();
+          }
+          if (name === 'chat') {
+            loadParentChatRooms();
+          }
+
+        }
+
+        function toggleChildInterest(el) {
+          el.classList.toggle('selected');
+        }
+
+        async function handleAddChild(e) {
+          e.preventDefault();
+          const interests = [...document.querySelectorAll('#psection-addchild .interest-item.selected')].map(el => el.dataset.interest);
+          const password =
+            document.getElementById('childPassword').value;
+
+          const strongPassword =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+          if (!strongPassword.test(password)) {
+
+            document.getElementById('addChildAlert').innerHTML = `
+          <div class="alert alert-error">
+            <span>❌</span>
+            Password must contain:
+            <br>• 8+ characters
+            <br>• Uppercase letter
+            <br>• Lowercase letter
+            <br>• Number
+            <br>• Special character
+          </div>
+        `;
+
+            return;
+          }
+          const data = {
+            first_name: document.getElementById('childFirstName').value.trim(),
+            last_name: document.getElementById('childLastName').value.trim(),
+            username: document.getElementById('childUsername').value.trim(),
+            password: document.getElementById('childPassword').value,
+            birthdate: document.getElementById('childBirthdate').value,
+            interests: interests.join(',')
+          };
+          const result = await apiPost('../backend/api/add_child.php', data);
+          if (!result.ok) {
+            document.getElementById('addChildAlert').innerHTML = `<div class="alert alert-error"><span>❌</span> ${escapeHTML(result.error || 'Failed to create child')}</div>`;
+            return;
+          }
+          showToast('Child account created successfully! 🎉');
+          document.getElementById('addChildAlert').innerHTML = `<div class="alert alert-success"><span>✅</span> Created. Username: <strong>${escapeHTML(result.username)}</strong></div>`;
+          e.target.reset();
+          document.querySelectorAll('#psection-addchild .interest-item.selected').forEach(el => el.classList.remove('selected'));
+          await Promise.all([loadChildren(), loadPendingEnrollments()]);
+          showParentSection('children');
+        }
+
+        async function approveEnrollment(id) {
+          const result = await apiPost('../backend/api/enrollment.php', { action: 'approve', enrollment_id: id });
+          showToast(result.ok ? 'Enrollment approved.' : (result.error || 'Could not approve'), result.ok ? 'success' : 'error');
+          await Promise.all([loadPendingEnrollments(), loadChildren()]);
+        }
+
+        async function denyEnrollment(id) {
+          const result = await apiPost('../backend/api/enrollment.php', { action: 'deny', enrollment_id: id });
+          showToast(result.ok ? 'Enrollment denied.' : (result.error || 'Could not deny'), result.ok ? 'success' : 'error');
+        }
+
+        const passwordInput =
+          document.getElementById('childPassword');
+
+        if (passwordInput) {
+
+          passwordInput.addEventListener('input', function () {
+
+            const value = this.value;
+
+            updateRule(
+              'reqLength',
+              value.length >= 8
+            );
+
+            updateRule(
+              'reqUpper',
+              /[A-Z]/.test(value)
+            );
+
+            updateRule(
+              'reqLower',
+              /[a-z]/.test(value)
+            );
+
+            updateRule(
+              'reqNumber',
+              /\d/.test(value)
+            );
+
+            updateRule(
+              'reqSpecial',
+              /[@$!%*?&]/.test(value)
+            );
+          });
+
+          function updateRule(id, valid) {
+
+            const el =
+              document.getElementById(id);
+
+            if (!el) return;
+
+            el.innerHTML =
+              valid
+                ? '✅ ' + el.textContent.substring(2)
+                : '❌ ' + el.textContent.substring(2);
+
+            el.style.color =
+              valid
+                ? '#27ae60'
+                : '#e74c3c';
+          }
+        }
+
+        async function loadParentDashboard() {
+          const user = await requirePageRole('parent');
+          if (!user) return;
+
+          document.getElementById('parentName').textContent =
+            user.display_name || 'Parent';
+
+          document.getElementById('parentWelcomeName').textContent =
+            user.first_name || user.display_name || 'Parent';
+
+          document.getElementById('parentAvatar').textContent =
+            initials(user.first_name, user.last_name, 'P');
+
+          await loadChildren();
+          await loadRecentActivity();
+        }
+
+        async function loadRecentActivity() {
+
+          const body =
+            document.getElementById('recentActivityBody');
+
+          if (!body) return;
+
+          const result = await apiGet(
+            '../backend/api/parent_activity.php'
+          );
+
+          if (!result.ok) {
+
+            body.innerHTML =
+              '<tr><td colspan="4">Could not load activity.</td></tr>';
+
+            return;
+          }
+
+          const activities =
+            result.activities || [];
+
+          if (!activities.length) {
+
+            body.innerHTML =
+              '<tr><td colspan="4">No recent activity yet.</td></tr>';
+
+            return;
+          }
+
+          body.innerHTML = activities.map(a => `
+        <tr>
+          <td>${escapeHTML(a.student_name)}</td>
+          <td>${escapeHTML(a.activity)}</td>
+          <td>${Number(a.xp || 0)}</td>
+          <td>${escapeHTML(a.activity_date)}</td>
+        </tr>
+      `).join('');
+        }
+
+        async function loadProgressActivity() {
+
+          const result = await apiGet(
+            '../backend/api/parent_activity.php'
+          );
+
+          const container =
+            document.getElementById('pendingEnrollments');
+
+          if (!result.ok) {
+
+            container.innerHTML =
+              'Could not load activity.';
+
+            return;
+          }
+
+          const activities =
+            result.activities || [];
+
+          if (!activities.length) {
+
+            container.innerHTML =
+              'No recent activity yet.';
+
+            return;
+          }
+
+          container.innerHTML =
+            activities.map(a => `
+      <div style="margin-bottom:10px">
+        👧 ${a.student_name}
+        —
+        ${a.activity}
+        (+${a.xp} XP)
+      </div>
+    `).join('');
+        }
+
+        async function loadChildren() {
+          const result = await apiGet('../backend/api/parent_children.php');
+          if (!result.ok) return;
+          const children = result.children || [];
+          document.getElementById('childCount').textContent = children.length;
+          const totalCourses = children.reduce((sum, c) => sum + Number(c.course_count || 0), 0);
+          const totalXP = children.reduce((sum, c) => sum + Number(c.total_xp || 0), 0);
+          const totalBadges = children.reduce((sum, c) => sum + Number(c.badge_count || 0), 0);
+          document.getElementById('parentTotalCourses').textContent = totalCourses;
+          document.getElementById('parentTotalXP').textContent = totalXP;
+          document.getElementById('parentTotalBadges').textContent = totalBadges;
+
+          const overview = document.getElementById('childrenOverview');
+          const list = document.getElementById('childrenList');
+          if (!children.length) {
+            overview.innerHTML = '<div class="card" style="padding:24px;color:var(--text-secondary)">No children added yet. Use the Add Child page to create a student account.</div>';
+            list.innerHTML = '<div class="card" style="padding:24px;color:var(--text-secondary)">No children added yet.</div>';
+            return;
+          }
+          overview.innerHTML = children.map(child => `
+        <div class="card" style="padding:24px">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+            <div class="avatar avatar-lg" style="background:var(--gradient-primary)">${initials(child.first_name, child.last_name, 'S')}</div>
+            <div>
+              <h3 style="font-size:1.1rem">${escapeHTML(child.display_name)}</h3>
+              <div class="chip chip-primary" style="margin-top:4px">Username: ${escapeHTML(child.username || '')}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="chip chip-primary">📚 ${Number(child.course_count || 0)} Courses</div>
+            <div class="chip chip-success">🏆 ${Number(child.badge_count || 0)} Badges</div>
+            <div class="chip chip-accent">⭐ ${Number(child.total_xp || 0)} XP</div>
+          </div>
+        </div>`).join('');
+          list.innerHTML = children.map(child => `
+        <div class="card" style="padding:24px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+            <div style="display:flex;align-items:center;gap:16px">
+              <div class="avatar avatar-lg" style="background:var(--gradient-primary)">${initials(child.first_name, child.last_name, 'S')}</div>
+              <div>
+                <h3>${escapeHTML(child.display_name)}</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem">Username: ${escapeHTML(child.username || '')} • Age: ${child.age || '-'}</p>
+              </div>
+            </div>
+          </div>
+        </div>`).join('');
+        }
+
+        async function loadParentChatRooms() {
+
+          const result =
+            await apiGet(
+              '../backend/api/parent_chat_rooms.php'
+            );
+
+          const container =
+            document.getElementById(
+              'parentChatRooms'
+            );
+
+          if (
+            !result.ok ||
+            !result.rooms ||
+            !result.rooms.length
+          ) {
+
+            container.innerHTML =
+              'No communities yet.';
+
+            return;
+          }
+
+          container.innerHTML =
+            result.rooms.map(room => `
+
+              <div
+                class="card"
+                style="
+                  padding:12px;
+                  margin-bottom:10px;
+                  cursor:pointer;
+                "
+                onclick="
+                  loadParentMessages(
+                    ${room.id}
+                  )
+                "
+              >
+
+                📚 ${escapeHTML(room.course_title)}
+
+              </div>
+
+            `).join('');
+        }
+
+        async function sendParentChat() {
+
+          if (!currentParentRoom) {
+
+            showToast(
+              'Select a community first.',
+              'error'
+            );
+
+            return;
+          }
+
+          const input =
+            document.getElementById(
+              'parentChatInput'
+            );
+
+          const message =
+            input.value.trim();
+
+          if (!message) return;
+
+          const result =
+            await apiPost(
+              '../backend/api/send_parent_message.php',
+              {
+                room_id: currentParentRoom,
+                message
+              }
+            );
+
+          if (!result.ok) {
+
+            showToast(
+              result.error ||
+              'Could not send message',
+              'error'
+            );
+
+            return;
+          }
+
+          input.value = '';
+
+          await loadParentMessages(
+            currentParentRoom
+          );
+        }
+
+        let currentParentRoom = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+          await loadParentDashboard();
+
+          showParentSection('overview');
+
+        });
+
+        async function loadParentMessages(roomId) {
+
+          currentParentRoom = roomId;
+
+          const result =
+            await apiGet(
+              '../backend/api/parent_chat_messages.php?room_id=' +
+              roomId
+            );
+
+          const container =
+            document.getElementById(
+              'parentChatMessages'
+            );
+
+          if (
+            !result.ok ||
+            !result.messages
+          ) {
+
+            container.innerHTML =
+              'Could not load messages.';
+
+            return;
+          }
+
+          container.innerHTML =
+            result.messages.map(msg => `
+
+              <div
+                style="
+                  margin-bottom:12px;
+                "
+              >
+
+                <strong>
+                  ${escapeHTML(msg.display_name)}
+                </strong>
+
+                <br>
+
+                ${escapeHTML(msg.message)}
+
+              </div>
+
+            `).join('');
+
+          container.scrollTop =
+            container.scrollHeight;
+        }
+
+        setInterval(() => {
+
+          if (currentParentRoom) {
+
+            loadParentMessages(
+              currentParentRoom
+            );
+
+          }
+
+        }, 5000);
+
+      </script>
+      <script src="./splash.js"></script>
+</body>
+
+</html>

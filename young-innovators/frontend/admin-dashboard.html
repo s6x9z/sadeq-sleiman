@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Admin Dashboard - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="#" onclick="showSection('overview')">
+          Dashboard
+        </a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <button class="btn btn-sm" style="background:var(--gradient-accent);color:white"
+          onclick="logout()">Logout</button>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="avatar avatar-xl" style="background:var(--gradient-warm);margin:0 auto 12px">AD</div>
+        <h3 style="font-size:1.1rem">Admin User</h3>
+        <div class="chip" style="margin-top:4px;background:var(--gradient-warm);color:white">🛡️ Administrator</div>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#overview" class="active" onclick="showAdminSection('overview')"><span class="menu-icon">🏠</span>
+          Overview</a>
+        <a href="#verification" onclick="showAdminSection('verification')"><span class="menu-icon">✅</span> Verification
+          Queue</a>
+        <a href="#users" onclick="showAdminSection('users')"><span class="menu-icon">👥</span> Users</a>
+        <a href="#courses" onclick="showAdminSection('courses')"><span class="menu-icon">📚</span> Courses</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <!-- Overview -->
+      <div id="admin-overview">
+        <div class="dashboard-header">
+          <div>
+            <h1>Admin Dashboard 🛡️</h1>
+            <p class="welcome-text">Platform management and moderation</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card card-gradient" style="background:var(--gradient-primary)">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="adminTotalUsers">0</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-secondary)">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value" id="adminActiveCourses">0</div>
+            <div class="stat-label">Active Courses</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-warm)">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-value" id="adminPendingProviders">0</div>
+            <div class="stat-label">Pending Verifications</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-success)">
+            <div class="stat-icon">🎮</div>
+            <div class="stat-value" id="adminGamesCreated">0</div>
+            <div class="stat-label">Games Created</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <h3 style="margin-bottom:16px">Quick Actions</h3>
+        <div class="grid-3" style="margin-bottom:24px">
+          <div class="card" style="padding:24px;text-align:center;cursor:pointer"
+            onclick="showAdminSection('verification')">
+            <div style="font-size:2.5rem;margin-bottom:8px">✅</div>
+            <h4>Review Providers</h4>
+            <p style="font-size:0.85rem;color:var(--text-secondary)"><span id="pendingProvidersText">0 pending
+                applications</span></p>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;cursor:pointer" onclick="showAdminSection('users')">
+            <div style="font-size:2.5rem;margin-bottom:8px">👥</div>
+            <h4>Manage Users</h4>
+            <p style="font-size:0.85rem;color:var(--text-secondary)">View all accounts</p>
+          </div>
+          <div class="card" style="padding:24px;text-align:center;cursor:pointer" onclick="showAdminSection('courses')">
+            <div style="font-size:2.5rem;margin-bottom:8px">📚</div>
+            <h4>Manage Courses</h4>
+            <p style="font-size:0.85rem;color:var(--text-secondary)">Review content</p>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <h3 style="margin-bottom:16px">Recent Platform Activity</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="adminActivityBody">
+              <tr>
+                <td colspan="4" style="color:var(--text-secondary)">No recent platform activity yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Verification Queue -->
+      <div id="admin-verification" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Provider Verification Queue ✅</h1>
+            <p class="welcome-text">Review and approve content provider applications</p>
+          </div>
+        </div>
+
+        <div id="verificationList"></div>
+      </div>
+
+      <!-- Users -->
+      <div id="admin-users" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>User Management 👥</h1>
+            <p class="welcome-text">View and manage all platform users</p>
+          </div>
+        </div>
+
+        <div class="tabs" style="margin-bottom:24px">
+          <button class="tab active" onclick="filterUsers('all', this)">
+            All Users
+          </button>
+
+          <button class="tab" onclick="filterUsers('parent', this)">
+            Parents
+          </button>
+
+          <button class="tab" onclick="filterUsers('student', this)">
+            Students
+          </button>
+
+          <button class="tab" onclick="filterUsers('provider', this)">
+            Providers
+          </button>
+
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersBody">
+              <tr>
+                <td colspan="5" style="color:var(--text-secondary)">Loading users...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Courses Management -->
+      <div id="admin-courses" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Course Management 📚</h1>
+            <p class="welcome-text">Review and manage platform courses</p>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Provider</th>
+                <th>Subject</th>
+                <th>Students</th>
+                <th>Rating</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminCoursesBody">
+              <tr>
+                <td colspan="6" style="color:var(--text-secondary)">Loading courses...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+  <script>
+    function showAdminSection(name) {
+      document.querySelectorAll('[id^="admin-"]').forEach(s => s.style.display = 'none');
+      document.getElementById('admin-' + name).style.display = 'block';
+      document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+      document.querySelector(`.sidebar-menu a[href="#${name}"]`)?.classList.add('active');
+    }
+
+    async function loadAdminDashboard() {
+      const user = await requirePageRole('admin');
+      if (!user) return;
+      await Promise.all([loadPendingProviders(), loadAdminUsers(), loadAdminCourses()]);
+    }
+
+    async function loadPendingProviders() {
+      const result = await apiGet('../backend/api/pending_providers.php');
+      const list = document.getElementById('verificationList');
+      if (!list) return;
+      const providers = result.providers || [];
+      document.getElementById('adminPendingProviders').textContent = providers.length;
+      const ppText = document.getElementById('pendingProvidersText');
+      if (ppText) ppText.textContent = providers.length + ' pending application' + (providers.length === 1 ? '' : 's');
+      const act = document.getElementById('adminActivityBody');
+      if (act && providers.length) {
+        act.innerHTML = providers.slice(0, 5).map(p => `<tr><td>Provider application</td><td>${escapeHTML(p.display_name)}</td><td><span class="status status-pending">Pending</span></td><td>${escapeHTML((p.applied_at || p.created_at || '').slice(0, 10))}</td></tr>`).join('');
+      }
+      if (!providers.length) {
+        list.innerHTML = '<div class="card" style="padding:24px;color:var(--text-secondary)">No pending provider applications.</div>';
+        return;
+      }
+      list.innerHTML = providers.map(p => `<div class="card" style="padding:24px;margin-bottom:16px;border-left:4px solid var(--warning)"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px"><div style="display:flex;gap:16px;align-items:flex-start"><div class="avatar avatar-lg" style="background:var(--gradient-warm)">${initials(p.first_name, p.last_name, 'P')}</div><div><h3 style="font-size:1.1rem">${escapeHTML(p.display_name)}</h3><p style="color:var(--text-secondary);font-size:0.9rem">${escapeHTML(p.email)} • ${escapeHTML(p.org || '')}</p><div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px"><span class="chip chip-primary">${escapeHTML(p.qualifications || 'Qualifications')}</span><span class="chip">${Number(p.experience_years || 0)} years exp</span><span class="chip chip-accent">${escapeHTML(p.specialties || '')}</span></div></div></div><span class="status status-pending">Pending</span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid #F0F0F5;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-success btn-sm" onclick="approveProvider(${Number(p.id)})">✓ Approve</button><button class="btn btn-sm" style="background:#E1705515;color:var(--danger)" onclick="rejectProvider(${Number(p.id)})">✕ Reject</button></div></div>`).join('');
+    }
+
+    async function approveProvider(id) {
+      const result = await apiPost('../backend/api/approve_provider.php', { provider_id: id });
+      showToast(result.ok ? 'Provider approved.' : (result.error || 'Could not approve'), result.ok ? 'success' : 'error');
+      await Promise.all([loadPendingProviders(), loadAdminUsers(), loadAdminCourses()]);
+    }
+
+    async function rejectProvider(id) {
+      const reason = prompt('Reason for rejection?') || '';
+      const result = await apiPost('../backend/api/reject_provider.php', { provider_id: id, reason });
+      showToast(result.ok ? 'Provider rejected.' : (result.error || 'Could not reject'), result.ok ? 'success' : 'error');
+      await Promise.all([loadPendingProviders(), loadAdminUsers(), loadAdminCourses()]);
+    }
+
+    async function loadAdminUsers() {
+      const result = await apiGet('../backend/api/admin_users.php');
+      const body = document.getElementById('adminUsersBody');
+      if (!body) return;
+      const users = result.users || [];
+      document.getElementById('adminTotalUsers').textContent = users.length;
+      if (!users.length) {
+        body.innerHTML = '<tr><td colspan="5" style="color:var(--text-secondary)">No users found.</td></tr>';
+        return;
+      }
+      body.innerHTML = users.map(u => `
+<tr class="user-row" data-role="${u.role}">
+
+<td>
+<div style="display:flex;align-items:center;gap:8px">
+
+<div class="avatar avatar-sm"
+style="background:var(--gradient-primary)">
+${initials(u.first_name, u.last_name, 'U')}
+</div>
+
+${escapeHTML(u.display_name)}
+
+</div>
+</td>
+
+<td>
+<span class="chip chip-primary">
+${escapeHTML(u.role)}
+</span>
+</td>
+
+<td>
+${escapeHTML(u.email || u.username || '—')}
+</td>
+
+<td>
+<span class="status ${u.provider_status === 'pending'
+          ? 'status-pending'
+          : 'status-active'}">
+
+${escapeHTML(u.provider_status || 'active')}
+
+</span>
+</td>
+
+<td>
+${escapeHTML((u.created_at || '').slice(0, 10))}
+</td>
+
+</tr>
+`).join('');
+    }
+
+
+    async function loadAdminCourses() {
+      const result = await apiGet('../backend/api/courses.php?action=list');
+      const courses = result.ok ? (result.courses || []) : [];
+      document.getElementById('adminActiveCourses').textContent = courses.filter(c => c.status === 'approved').length;
+      document.getElementById('adminGamesCreated').textContent = courses.filter(c => c.type === 'game').length;
+      const courseBody = document.getElementById('adminCoursesBody');
+      if (courseBody) {
+        if (!courses.length) {
+          courseBody.innerHTML = '<tr><td colspan="6" style="color:var(--text-secondary)">No courses found.</td></tr>';
+        } else {
+          courseBody.innerHTML = courses.map(c => `
+
+<tr>
+
+<td>
+${escapeHTML(c.title)}
+</td>
+
+<td>
+${escapeHTML(c.provider_name || 'Provider')}
+</td>
+
+<td>
+${escapeHTML(c.skill_name || 'Course')}
+</td>
+
+<td>
+0
+</td>
+
+<td>
+—
+</td>
+
+<td>
+
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+
+<span class="status ${c.status === 'approved'
+              ? 'status-approved'
+              : c.status === 'pending'
+                ? 'status-pending'
+                : 'status-active'
+            }">
+
+${escapeHTML(c.status)}
+
+</span>
+
+${c.status === 'pending' ? `
+
+<button
+class="btn btn-success btn-sm"
+onclick="approveCourse(${c.id})">
+
+Approve
+
+</button>
+
+<button
+class="btn btn-sm"
+style="background:#ff4d4f;color:white"
+onclick="rejectCourse(${c.id})">
+
+Reject
+
+</button>
+
+` : ''}
+
+</div>
+
+</td>
+
+</tr>
+
+`).join('');
+        }
+      }
+    }
+    async function approveCourse(id) {
+
+      const result =
+        await apiPost(
+          '../backend/api/admin_course_action.php',
+          {
+            action: 'approve',
+            course_id: id
+          });
+
+      showToast(
+        result.ok
+          ? 'Course approved'
+          : (result.error || 'Could not approve'),
+        result.ok ? 'success' : 'error'
+      );
+
+      loadAdminCourses();
+    }
+
+    async function rejectCourse(id) {
+
+      const result =
+        await apiPost(
+          '../backend/api/admin_course_action.php',
+          {
+            action: 'reject',
+            course_id: id
+          });
+
+      showToast(
+        result.ok
+          ? 'Course rejected'
+          : (result.error || 'Could not reject'),
+        result.ok ? 'success' : 'error'
+      );
+
+      loadAdminCourses();
+    }
+    document.addEventListener('DOMContentLoaded', loadAdminDashboard);
+  </script>
+  <script>
+
+    function filterUsers(role, button) {
+
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      button.classList.add('active');
+
+      const rows = document.querySelectorAll('.user-row');
+
+      rows.forEach(row => {
+
+        const rowRole = row.dataset.role;
+
+        if (role === 'all') {
+
+          row.style.display = '';
+
+        } else if (rowRole === role) {
+
+          row.style.display = '';
+
+        } else {
+
+          row.style.display = 'none';
+        }
+
+      });
+    }
+
+  </script>
+  <script src="./splash.js"></script>
+</body>
+
+</html>

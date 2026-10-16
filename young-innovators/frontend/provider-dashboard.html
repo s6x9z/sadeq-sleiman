@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Provider Dashboard - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="#" onclick="showSection('overview')">
+          Dashboard
+        </a>
+        <a href="browse-courses.html">Courses</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <button class="btn btn-sm" style="background:var(--gradient-accent);color:white"
+          onclick="logout()">Logout</button>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="avatar avatar-xl" style="background:var(--gradient-success);margin:0 auto 12px" id="providerAvatar">
+          P</div>
+        <h3 style="font-size:1.1rem" id="providerName">Provider</h3>
+        <div class="chip chip-success" style="margin-top:4px" id="providerStatusChip">Status</div>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#overview" class="active" onclick="showProvSection('overview')"><span class="menu-icon">🏠</span>
+          Overview</a>
+        <a href="#courses" onclick="showProvSection('courses')"><span class="menu-icon">📚</span> My Courses</a>
+        <a href="#upload" onclick="showProvSection('upload')"><span class="menu-icon">📄</span> Upload PDF</a>
+        <a href="#analytics" onclick="showProvSection('analytics')"><span class="menu-icon">📊</span> Analytics</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <!-- Overview -->
+      <div id="prov-overview">
+        <div class="dashboard-header">
+          <div>
+            <h1>Provider Dashboard 📚</h1>
+            <p class="welcome-text">Manage your courses and content</p>
+          </div>
+          <button class="btn btn-primary" onclick="showProvSection('upload')">Upload PDF 📄</button>
+        </div>
+
+        <!-- Verification Status -->
+        <div class="verification-banner approved" id="providerStatusBanner">
+          <div class="banner-icon">ℹ️</div>
+          <div class="banner-text">
+            <h3>Loading status...</h3>
+            <p>Please wait.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card card-gradient" style="background:var(--gradient-primary)">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value" id="provCourseCount">0</div>
+            <div class="stat-label">Courses Created</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-secondary)">
+            <div class="stat-icon">👨‍🎓</div>
+            <div class="stat-value" id="provStudentCount">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-success)">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value" id="provPdfCount">0</div>
+            <div class="stat-label">PDFs Uploaded</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-warm)">
+            <div class="stat-icon">🎮</div>
+            <div class="stat-value" id="provGameCount">0</div>
+            <div class="stat-label">Games Generated</div>
+          </div>
+        </div>
+
+        <!-- Recent Uploads -->
+        <h3 style="margin-bottom:16px">Recent Uploads</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Subject</th>
+                <th>Games Generated</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="providerUploadsBody">
+              <tr>
+                <td colspan="5" style="color:var(--text-secondary)">No PDF uploads yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- My Courses -->
+      <div id="prov-courses" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>My Courses 📚</h1>
+            <p class="welcome-text">Manage your created courses</p>
+          </div>
+          <button class="btn btn-primary"
+  onclick="showProvSection('upload')">
+  + Create Course
+</button>
+        </div>
+
+        <div class="grid-3"></div>
+      </div>
+
+      <!-- Upload PDF -->
+      <div id="prov-upload" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Upload PDF 📄</h1>
+            <p class="welcome-text">Upload educational content to generate AI-powered games</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:32px;max-width:600px">
+          <div class="alert alert-info" style="margin-bottom:24px;font-size:0.85rem">
+            <span>🤖</span>
+            <span>Our AI will analyze your PDF and automatically generate educational games (Snake, Escape Room, Boxing
+              Quiz, Fill in the Blanks) from the content!</span>
+          </div>
+          <form onsubmit="handlePDFUpload(event)">
+            <div class="form-group">
+              <label>Course / Subject</label>
+              <select class="form-control" id="uploadSubject" required>
+                <option value="">Select a subject</option>
+                <option value="Math">Math</option>
+                <option value="Science">Science</option>
+                <option value="Coding">Coding</option>
+                <option value="Reading">Reading</option>
+                <option value="Music">Music</option>
+                <option value="Art">Art</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Course Title</label>
+              <input type="text" class="form-control" id="uploadTitle" placeholder="Course title created from this PDF"
+                required>
+            </div>
+            <div class="form-group">
+              <label>PDF File</label>
+              <input type="file" class="form-control" id="uploadPDF" accept=".pdf" required>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="form-control" id="uploadDesc" placeholder="Brief description of the content..."
+                rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Game Types to Generate</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+                <label
+                  style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#F0F0F5;border-radius:var(--radius-sm);cursor:pointer;font-size:0.9rem">
+                  <input type="checkbox" id="snakeGame" checked style="accent-color:var(--primary)"> 🐍 Snake
+                </label>
+                <label
+                  style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#F0F0F5;border-radius:var(--radius-sm);cursor:pointer;font-size:0.9rem">
+                  <input type="checkbox" id="escapeGame" checked style="accent-color:var(--primary)"> 🔐 Escape Room
+                </label>
+                <label
+                  style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#F0F0F5;border-radius:var(--radius-sm);cursor:pointer;font-size:0.9rem">
+                  <input type="checkbox" id="boxingGame" checked style="accent-color:var(--primary)"> 🥊 Boxing Quiz
+                </label>
+                <label
+                  style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:#F0F0F5;border-radius:var(--radius-sm);cursor:pointer;font-size:0.9rem">
+                  <input type="checkbox" id="fillGame" checked style="accent-color:var(--primary)"> ✏️ Fill Blanks
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Upload & Generate Games 🚀</button>
+          </form>
+          <div id="uploadResult" style="margin-top:16px"></div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div id="prov-analytics" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>Analytics 📊</h1>
+            <p class="welcome-text">Track your content performance</p>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom:24px">
+          <div class="stat-card card" style="border-left:4px solid var(--primary)">
+            <div class="stat-value" style="color:var(--primary)" id="analyticsViews">0</div>
+            <div class="stat-label">Total Views</div>
+          </div>
+          <div class="stat-card card" style="border-left:4px solid var(--success)">
+            <div class="stat-value" style="color:var(--success)" id="analyticsCompletion">0%</div>
+            <div class="stat-label">Completion Rate</div>
+          </div>
+          <div class="stat-card card" style="border-left:4px solid var(--warning)">
+            <div class="stat-value" style="color:#B8860B" id="analyticsRating">—</div>
+            <div class="stat-label">Avg Rating</div>
+          </div>
+          <div class="stat-card card" style="border-left:4px solid var(--accent)">
+            <div class="stat-value" style="color:var(--accent)" id="analyticsGames">0</div>
+            <div class="stat-label">Games Played</div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:24px">
+          <h3 style="margin-bottom:16px">Course Performance</h3>
+          <div class="table-container" style="box-shadow:none">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Students</th>
+                  <th>Avg Score</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody id="providerAnalyticsBody">
+                <tr>
+                  <td colspan="4" style="color:var(--text-secondary)">No course analytics yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+<button class="floating-cp-chatbot-btn" onclick="openCPBot()" title="Content Provider AI Assistant">
+  🤖
+</button>
+
+<div id="cpBotPanel" class="cp-bot-panel">
+  <button class="cp-panel-close" onclick="closeCPBot()">✕</button>
+  <iframe src="provider-chatbot.html"></iframe>
+</div>
+  </div>
+
+  <!-- Create Course Modal -->
+  <div class="modal-overlay" id="createCourseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Create New Course</h3>
+        <button class="modal-close"
+          onclick="document.getElementById('createCourseModal').classList.remove('active')">✕</button>
+      </div>
+      <form onsubmit="handleCreateCourse(event)">
+        <div class="form-group">
+          <label>Course Title</label>
+          <input type="text" class="form-control" id="courseTitle" placeholder="e.g., Fun with Fractions" required>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select class="form-control" id="courseSubject" required>
+            <option value="">Select subject</option>
+            <option>Math</option>
+            <option>Science</option>
+            <option>Coding</option>
+            <option>Reading</option>
+            <option>Music</option>
+            <option>Art</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Level</label>
+          <select class="form-control" id="courseLevel" required>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control" id="courseDescription" placeholder="What will students learn?" rows="3"
+            required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Create Course ✓</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+
+  <script>
+    let providerApproved = true;
+
+    function showProvSection(name) {
+      if (!providerApproved && ['courses', 'upload', 'analytics'].includes(name)) {
+        showToast(
+          'Your provider account must be approved by admin first.',
+          'error'
+        );
+
+        name = 'overview';
+      }
+
+      document
+        .querySelectorAll('[id^="prov-"]')
+        .forEach(s => s.style.display = 'none');
+
+      document.getElementById(
+        'prov-' + name
+      ).style.display = 'block';
+
+      document
+        .querySelectorAll('.sidebar-menu a')
+        .forEach(a => a.classList.remove('active'));
+
+      document
+        .querySelector(`.sidebar-menu a[href="#${name}"]`)
+        ?.classList.add('active');
+    }
+
+    async function loadProviderDashboard() {
+
+      const uploadResult =
+        document.getElementById('uploadResult');
+
+    if (uploadResult) {
+        uploadResult.innerHTML = '';
+    }
+
+    const user = await requirePageRole('provider');
+
+    if (!user) return;
+    
+      document.getElementById('providerName').textContent =
+        user.display_name || 'Provider';
+
+      document.getElementById('providerAvatar').textContent =
+        initials(user.first_name, user.last_name, 'P');
+
+      const chip =
+        document.getElementById('providerStatusChip');
+
+      const banner =
+        document.getElementById('providerStatusBanner');
+
+      const response = await apiGet(
+        '../backend/api/provider_status.php'
+      );
+
+      const status =
+        response.status || 'pending';
+
+      console.log('Provider Status:', status);
+
+      if (status === 'approved') {
+
+        providerApproved = true;
+
+        chip.className = 'chip chip-success';
+        chip.textContent = '✓ Active';
+
+        banner.className = 'verification-banner approved';
+
+        banner.innerHTML =
+          '<div class="banner-icon">✅</div>' +
+          '<div class="banner-text">' +
+          '<h3>Provider Account Active</h3>' +
+          '<p>You can upload content and publish courses immediately.</p>' +
+          '</div>';
+
+      } else {
+
+        providerApproved = false;
+
+        chip.className = 'chip chip-warning';
+        chip.textContent = '⏳ Pending Approval';
+
+        banner.className = 'verification-banner pending';
+
+        banner.innerHTML =
+          '<div class="banner-icon">⏳</div>' +
+          '<div class="banner-text">' +
+          '<h3>Waiting For Admin Approval</h3>' +
+          '<p>Your provider application is being reviewed by an administrator.</p>' +
+          '</div>';
+
+      }
+
+      await loadProviderCourses();
+      await loadProviderUploads();
+      await loadProviderAnalytics();
+    }
+
+    async function loadProviderUploads() {
+
+      const body =
+        document.getElementById('providerUploadsBody');
+
+      if (!body) return;
+
+      const result = await apiGet(
+        '../backend/api/courses.php?action=list'
+      );
+
+      if (!result.ok) {
+
+        body.innerHTML =
+          '<tr><td colspan="5">Could not load uploads.</td></tr>';
+
+        return;
+      }
+
+      const generatedCourses = result.courses || [];
+
+      if (!generatedCourses.length) {
+
+        body.innerHTML =
+          '<tr><td colspan="5">No PDF uploads yet.</td></tr>';
+
+        return;
+      }
+
+      body.innerHTML = generatedCourses.map(c => `
+      <tr>
+
+          <td>
+              📄 ${escapeHTML(c.title)}
+          </td>
+
+          <td>
+              ${escapeHTML(c.skill_name || 'General')}
+          </td>
+
+          <td>
+              ${escapeHTML(c.game_type)}
+          </td>
+
+          <td>
+              <span class="status status-approved">
+                  generated
+              </span>
+          </td>
+
+          <td>
+              ${new Date(c.created_at)
+          .toISOString()
+          .slice(0, 10)}
+          </td>
+
+      </tr>
+  `).join('');
+    }
+
+    async function loadProviderAnalytics() {
+
+      const result = await apiGet(
+        '../backend/api/courses.php?action=list'
+      );
+
+      if (!result.ok) return;
+
+      const courses = result.courses || [];
+
+      let totalStudents = 0;
+      let totalGames = 0;
+      let avgScore = 0;
+
+      courses.forEach(course => {
+
+        totalStudents += Number(course.total_students || 0);
+
+        totalGames += Number(course.total_games_played || 0);
+
+        if (Number(course.total_students || 0) > 0) {
+          avgScore += Number(course.avg_score || 0);
+        }
+      });
+
+      avgScore =
+        courses.length
+          ? Math.round(avgScore / courses.length)
+          : 0;
+
+      const analyticsViews =
+        document.getElementById('analyticsViews');
+
+      const analyticsGames =
+        document.getElementById('analyticsGames');
+
+      const analyticsCompletion =
+        document.getElementById('analyticsCompletion');
+
+      if (analyticsViews)
+        analyticsViews.textContent = totalStudents;
+
+      if (analyticsGames)
+        analyticsGames.textContent = totalGames;
+
+      if (analyticsCompletion)
+        analyticsCompletion.textContent =
+          avgScore + '%';
+
+      const analyticsRating =
+        document.getElementById('analyticsRating');
+
+      if (analyticsRating)
+        analyticsRating.textContent =
+          avgScore + '%';
+
+      const body =
+        document.getElementById(
+          'providerAnalyticsBody'
+        );
+
+      if (!body) return;
+
+      if (!courses.length) {
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    No course analytics yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML = courses.map(course => `
+    <tr>
+        <td>${escapeHTML(course.title)}</td>
+        <td>${course.total_students || 0}</td>
+        <td>${course.avg_score || 0}%</td>
+        <td>${course.total_games_played || 0} 🎮</td>
+    </tr>
+`).join('');
+    }
+
+    async function loadProviderCourses() {
+
+      const grid =
+        document.querySelector('#prov-courses .grid-3');
+
+      if (!grid) return;
+
+      const result = await apiGet(
+        '../backend/api/courses.php?action=list'
+      );
+
+      if (!result.ok) {
+
+        grid.innerHTML =
+          '<div class="card">Could not load courses.</div>';
+
+        return;
+      }
+
+      const generatedCourses = result.courses || [];
+
+      document.getElementById('provCourseCount').textContent =
+        generatedCourses.length;
+
+      const totalStudents =
+        generatedCourses.reduce(
+          (sum, c) => sum + Number(c.total_students || 0),
+          0
+        );
+
+      document.getElementById('provStudentCount').textContent =
+        totalStudents;
+
+      document.getElementById('provPdfCount').textContent =
+        generatedCourses.length;
+
+      const totalGamesPlayed =
+        generatedCourses.reduce(
+          (sum, c) => sum + Number(c.total_games_played || 0),
+          0
+        );
+
+      document.getElementById('provGameCount').textContent =
+        totalGamesPlayed;
+
+      if (!generatedCourses.length) {
+
+        grid.innerHTML =
+          '<div class="card" style="padding:24px;color:var(--text-secondary)">No courses created yet.</div>';
+
+        return;
+      }
+
+      grid.innerHTML = generatedCourses.map(c => `
+      <div class="course-card">
+
+          <div class="course-image"
+               style="
+                  background:var(--gradient-primary);
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:4rem
+               ">
+               🎮
+          </div>
+
+          <div class="course-body">
+
+              <div class="course-title">
+                  ${escapeHTML(c.title)}
+              </div>
+
+              <div class="course-meta">
+
+                  <span>
+                      ${escapeHTML(c.skill_name || 'General')}
+                  </span>
+
+                  <span>
+                      generated
+                  </span>
+
+              </div>
+
+              <button
+                  class="btn btn-primary"
+                  style="margin-top:12px;width:100%"
+                  onclick="
+                    window.location.href =
+                      '../games/' +
+                      '${c.game_page}' +
+                      '?csv=' +
+                      '${c.csv_file}';
+                  "
+              >
+                  🎮 Play Game
+              </button>
+              <button
+  class="btn btn-outline"
+  style="margin-top:8px;width:100%"
+  onclick="deleteCourse(${c.id})"
+>
+  🗑 Delete Course
+</button>
+
+          </div>
+
+      </div>
+  `).join('');
+    }
+
+    async function handlePDFUpload(e) {
+
+      e.preventDefault();
+
+      const file =
+        document.getElementById('uploadPDF').files[0];
+
+      if (!file)
+        return showToast(
+          'Please choose a PDF file.',
+          'error'
+        );
+
+      const formData = new FormData();
+
+      formData.append(
+        'subject',
+        document.getElementById('uploadSubject').value
+      );
+
+      formData.append(
+        'title',
+        document.getElementById('uploadTitle').value.trim()
+      );
+
+      formData.append(
+        'description',
+        document.getElementById('uploadDesc').value.trim()
+      );
+
+      formData.append('file', file);
+
+      let selectedGame = 'escape';
+
+      if (document.getElementById('snakeGame')?.checked) {
+        selectedGame = 'snake';
+      }
+
+      if (document.getElementById('escapeGame')?.checked) {
+        selectedGame = 'escape';
+      }
+
+      if (document.getElementById('boxingGame')?.checked) {
+        selectedGame = 'boxing';
+      }
+
+      if (document.getElementById('fillGame')?.checked) {
+        selectedGame = 'fill';
+      }
+
+      formData.append('game_type', selectedGame);
+
+      const response = await fetch(
+        'http://127.0.0.1:5002/upload',
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      const result = await response.json();
+
+      console.log(result);
+
+      if (result.status !== 'success') {
+
+        return showToast(
+          result.message || 'Upload failed.',
+          'error'
+        );
+      }
+
+      const saveResult = await apiPost(
+        '../backend/api/courses.php',
+        {
+          action: 'submit',
+          title: document.getElementById('uploadTitle').value,
+          description: document.getElementById('uploadDesc').value,
+          skill_name: document.getElementById('uploadSubject').value,
+          type: 'game',
+          game_type: selectedGame,
+          game_page: result.game_page,
+          csv_file: result.csv_file
+        }
+      );
+
+      if (!saveResult.ok) {
+
+        return showToast(
+          saveResult.error,
+          'error'
+        );
+      }
+
+      document.getElementById(
+        'uploadResult'
+      ).innerHTML =
+        `
+    <div class="alert alert-success">
+        <span>✅</span>
+        AI game generated successfully.
+        <br><br>
+
+        <button
+            class="btn btn-primary"
+            onclick="
+                window.location.href =
+                    '../games/' +
+                    '${result.game_page}' +
+                    '?csv=' +
+                    '${result.csv_file}';
+            "
+        >
+            🎮 Play Generated Game
+        </button>
+    </div>
+    `;
+
+      e.target.reset();
+
+      await loadProviderCourses();
+      await loadProviderUploads();
+
+      showToast(
+        'AI game generated successfully!',
+        'success'
+      );
+    }
+
+    async function handleCreateCourse(e) {
+
+      e.preventDefault();
+
+      const result = await apiPost(
+        '../backend/api/courses.php',
+        {
+          action: 'submit',
+          title: document.getElementById('courseTitle').value.trim(),
+          skill_name: document.getElementById('courseSubject').value,
+          description: document.getElementById('courseDescription').value.trim(),
+          type: 'game'
+        }
+      );
+
+      if (!result.ok)
+        return showToast(
+          result.error || 'Could not create course.',
+          'error'
+        );
+
+      showToast('Course published successfully.');
+      document
+        .getElementById('createCourseModal')
+        .classList.remove('active');
+
+      e.target.reset();
+
+      await loadProviderCourses();
+    }
+
+    async function deleteCourse(courseId) {
+
+      if (!confirm('Delete this course?')) {
+        return;
+      }
+
+      const result = await apiPost(
+        '../backend/api/courses.php',
+        {
+          action: 'delete',
+          course_id: courseId
+        }
+      );
+
+      if (!result.ok) {
+
+        return showToast(
+          result.error || 'Could not delete course.',
+          'error'
+        );
+      }
+
+      showToast(
+        'Course deleted successfully.',
+        'success'
+      );
+
+      await loadProviderCourses();
+      await loadProviderUploads();
+    }
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      loadProviderDashboard
+    );
+
+function openCPBot() {
+  document.getElementById('cpBotPanel').classList.add('show');
+}
+
+function closeCPBot() {
+  document.getElementById('cpBotPanel').classList.remove('show');
+}
+  </script>
+
+  <script src="./splash.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Young Innovators - Gamified Learning for Kids</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="browse-courses.html">Courses</a>
+        <a href="subscription.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <a href="login.html" class="btn btn-outline btn-sm">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text animate-fadeInUp">
+          <h1>Learn, Play &<br><span class="text-gradient">Innovate!</span></h1>
+          <p>A fun, gamified learning platform where kids aged 10–13 earn XP, unlock badges, and master new skills
+            through interactive games and courses.</p>
+          <div class="hero-buttons">
+            <a href="register.html" class="btn btn-primary btn-lg">Get Started Free 🎮</a>
+            <a href="browse-courses.html" class="btn btn-outline btn-lg">Explore Courses</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="number">10K+</div>
+              <div class="label">Active Learners</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number">500+</div>
+              <div class="label">Courses</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number">50+</div>
+              <div class="label">Games</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-image animate-slideInRight">
+          <img
+            src="https://mgx-backend-cdn.metadl.com/generate/images/738464/2026-05-14/orqebfiaagoq/hero-banner-kids-learning.png"
+            alt="Kids learning and playing on Young Innovators platform">
+          <div class="hero-badge badge-1">
+            <span style="font-size:1.5rem">⭐</span>
+            <div>
+              <div style="font-weight:800;font-size:0.9rem">+50 XP</div>
+              <div style="font-size:0.7rem;color:var(--text-secondary)">Quiz Complete!</div>
+            </div>
+          </div>
+          <div class="hero-badge badge-2">
+            <span style="font-size:1.5rem">🏆</span>
+            <div>
+              <div style="font-weight:800;font-size:0.9rem">Badge Earned</div>
+              <div style="font-size:0.7rem;color:var(--text-secondary)">Math Wizard</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">✨ Why Young Innovators?</div>
+        <h2>Learning Made <span class="text-gradient">Awesome</span></h2>
+        <p>We combine education with gamification to create an engaging, safe, and fun learning experience for every
+          child.</p>
+      </div>
+      <div class="features-grid">
+        <div class="card feature-card animate-fadeInUp delay-1">
+          <div class="icon icon-purple">🎮</div>
+          <h3>Interactive Games</h3>
+          <p>Learn through Snake, Escape Rooms, Boxing Quizzes, and more — all powered by AI-generated educational
+            content.</p>
+        </div>
+        <div class="card feature-card animate-fadeInUp delay-2">
+          <div class="icon icon-blue">⭐</div>
+          <h3>XP & Badges</h3>
+          <p>Earn experience points, level up, and collect badges as you master new skills and complete challenges.</p>
+        </div>
+        <div class="card feature-card animate-fadeInUp delay-3">
+          <div class="icon icon-pink">🤖</div>
+          <h3>AI Buddy</h3>
+          <p>Your personal AI learning companion helps you understand concepts, answers questions, and guides your
+            journey.</p>
+        </div>
+        <div class="card feature-card animate-fadeInUp delay-1">
+          <div class="icon icon-green">👨‍👩‍👧</div>
+          <h3>Parent Dashboard</h3>
+          <p>Parents monitor progress, manage accounts, and ensure a safe learning environment for their children.</p>
+        </div>
+        <div class="card feature-card animate-fadeInUp delay-2">
+          <div class="icon icon-orange">📚</div>
+          <h3>Expert Content</h3>
+          <p>Verified educators and content providers create high-quality courses tailored for young minds.</p>
+        </div>
+        <div class="card feature-card animate-fadeInUp delay-3">
+          <div class="icon icon-teal">🔒</div>
+          <h3>Safe & Secure</h3>
+          <p>Built with child safety first — no direct messaging, parent-controlled accounts, and verified providers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" style="background: linear-gradient(180deg, #EDE7F6 0%, #F8F9FE 100%);">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🎯 How It Works</div>
+        <h2>Start Learning in <span class="text-gradient">3 Steps</span></h2>
+      </div>
+      <div class="grid-3">
+        <div class="card text-center" style="padding:32px">
+          <div
+            style="width:64px;height:64px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;font-weight:900;margin:0 auto 16px">
+            1</div>
+          <h3>Parent Signs Up</h3>
+          <p style="color:var(--text-secondary);margin-top:8px">Create your parent account and set up profiles for your
+            children in minutes.</p>
+        </div>
+        <div class="card text-center" style="padding:32px">
+          <div
+            style="width:64px;height:64px;background:var(--gradient-secondary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;font-weight:900;margin:0 auto 16px">
+            2</div>
+          <h3>Choose Interests</h3>
+          <p style="color:var(--text-secondary);margin-top:8px">Students pick their favorite subjects — Math, Science,
+            Coding, Art, and more!</p>
+        </div>
+        <div class="card text-center" style="padding:32px">
+          <div
+            style="width:64px;height:64px;background:var(--gradient-success);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;font-weight:900;margin:0 auto 16px">
+            3</div>
+          <h3>Play & Learn</h3>
+          <p style="color:var(--text-secondary);margin-top:8px">Dive into courses, play games, earn XP, and watch your
+            skills grow!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games Preview -->
+  <section class="section" id="games">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🎮 Featured Games</div>
+        <h2>Learn While <span class="text-gradient">Playing</span></h2>
+        <p>Our educational games make learning feel like an adventure.</p>
+      </div>
+      <div class="grid-4">
+        <div class="game-card">
+          <div class="game-preview" style="background:var(--gradient-success)">🐍</div>
+          <div class="game-info">
+            <div class="game-title">Snake Quest</div>
+            <div class="game-desc">Eat correct answers to grow!</div>
+            <div class="game-xp">⭐ +30 XP</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-preview" style="background:var(--gradient-primary)">🔐</div>
+          <div class="game-info">
+            <div class="game-title">Escape Room</div>
+            <div class="game-desc">Solve puzzles to escape!</div>
+            <div class="game-xp">⭐ +50 XP</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-preview" style="background:var(--gradient-warm)">🥊</div>
+          <div class="game-info">
+            <div class="game-title">Boxing Quiz</div>
+            <div class="game-desc">Answer fast to win rounds!</div>
+            <div class="game-xp">⭐ +40 XP</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-preview" style="background:var(--gradient-secondary)">✏️</div>
+          <div class="game-info">
+            <div class="game-title">Fill the Blanks</div>
+            <div class="game-desc">Complete the sentences!</div>
+            <div class="game-xp">⭐ +25 XP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mascot CTA -->
+  <section class="section" style="background: linear-gradient(180deg, #F8F9FE 0%, #EDE7F6 100%);">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:48px;max-width:900px;margin:0 auto">
+        <img
+          src="https://mgx-backend-cdn.metadl.com/generate/images/738464/2026-05-14/orqdyzaaagpq/mascot-robot-buddy.png"
+          alt="Buddy the Robot Mascot"
+          style="width:200px;height:200px;object-fit:contain;animation:bounce 3s ease-in-out infinite;flex-shrink:0">
+        <div>
+          <h2 style="font-size:2rem;margin-bottom:12px">Meet <span class="text-gradient">Buddy</span> 🤖</h2>
+          <p style="color:var(--text-secondary);font-size:1.1rem;margin-bottom:20px">Your AI-powered learning companion!
+            Buddy helps you understand tricky concepts, celebrates your achievements, and keeps you motivated on your
+            learning journey.</p>
+          <a href="register.html" class="btn btn-primary">Start Learning with Buddy →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust / Platform Commitments -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🛡️ Built for Safety</div>
+        <h2>Real Learning, <span class="text-gradient">Real Control</span></h2>
+        <p>Young Innovators uses role-based accounts, parent-created child logins, provider approval, and admin
+          moderation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section" style="background:var(--gradient-hero);padding:80px 0">
+    <div class="container text-center">
+      <h2 style="color:white;font-size:2.5rem;margin-bottom:16px">Ready to Start the Adventure?</h2>
+      <p
+        style="color:rgba(255,255,255,0.85);font-size:1.15rem;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto">
+        Join thousands of families who are making learning fun. Sign up today and get your first month free!</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="register.html" class="btn btn-lg" style="background:white;color:var(--primary)">Create Free Account
+          🚀</a>
+        <a href="about.html" class="btn btn-lg"
+          style="background:rgba(255,255,255,0.2);color:white;border:2px solid rgba(255,255,255,0.4)">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="./logo.png" alt="Young Innovators"
+              style="width:32px;height:32px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px">Young
+            Innovators
+          </div>
+          <p class="footer-desc">A gamified educational platform where children aged 10–13 learn, play, and grow through
+            interactive courses and AI-powered games.</p>
+        </div>
+        <div>
+          <h4>Platform</h4>
+          <div class="footer-links">
+            <a href="browse-courses.html">Courses</a>
+            <a href="subscription.html">Pricing</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4>Resources</h4>
+          <div class="footer-links">
+            <a href="resources.html#help">Help Center</a>
+            <a href="resources.html#parent">Parent Guide</a>
+            <a href="resources.html#safety">Safety Policy</a>
+            <a href="resources.html#blog">Blog</a>
+          </div>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <div class="footer-links">
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="privacy-policy.html#terms">Terms of Service</a>
+            <a href="privacy-policy.html#cookies">Cookie Policy</a>
+            <a href="privacy-policy.html#coppa">COPPA Compliance</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Young Innovators. All rights reserved. Made with ❤️ for young learners.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+  <script src="./splash.js"></script>
+
+  
+
+  <script>
+    if (!localStorage.getItem('cookieAccepted')) {
+      document.getElementById('cookieBanner').style.display = 'flex';
+    } else {
+      document.getElementById('cookieBanner').style.display = 'none';
+    }
+
+    document.getElementById('acceptCookies').onclick = () => {
+      localStorage.setItem('cookieAccepted', 'yes');
+      document.getElementById('cookieBanner').style.display = 'none';
+    };
+  </script>
+</body>
+
+</html>

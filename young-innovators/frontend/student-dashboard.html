@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Student Dashboard - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="#" onclick="showSection('overview')">
+          Dashboard
+        </a>
+        <a href="browse-courses.html">Courses</a>
+        <a href="#" onclick="showSection('games')">Games</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <button class="btn btn-sm" style="background:var(--gradient-accent);color:white"
+          onclick="logout()">Logout</button>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="avatar avatar-xl" style="background:var(--gradient-primary);margin:0 auto 12px" id="studentAvatar">S
+        </div>
+        <h3 style="font-size:1.1rem" id="studentName">Student</h3>
+        <div class="level-badge" id="studentLevel">⭐ Level 1 - Beginner</div>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#overview" class="active" onclick="showSection('overview')"><span class="menu-icon">🏠</span>
+          Overview</a>
+        <a href="#courses" onclick="showSection('courses')"><span class="menu-icon">📚</span> My Courses</a>
+        <a href="#games" onclick="showSection('games')">
+          <span class="menu-icon">🎮</span>
+          My Games
+        </a>
+        <a href="#badges" onclick="showSection('badges')"><span class="menu-icon">🏆</span> Badges</a>
+
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <!-- Overview Section -->
+      <div id="section-overview">
+        <div class="dashboard-header">
+          <div>
+            <h1>Welcome back,
+              <span class="text-gradient" id="welcomeName">Student</span>! 🎉
+            </h1>
+            <p class="welcome-text">
+              Ready for another day of learning and fun?
+            </p>
+          </div>
+        </div>
+
+        <!-- Mascot -->
+        <div class="mascot-section" style="margin-bottom:24px">
+          <img
+            src="https://mgx-backend-cdn.metadl.com/generate/images/738464/2026-05-14/orqdyzaaagpq/mascot-robot-buddy.png"
+            alt="Buddy" class="mascot-img">
+          <div class="mascot-speech">
+            <p style="font-weight:600;margin-bottom:4px">Hey there, champ! 🌟</p>
+            <p style="color:var(--text-secondary);font-size:0.9rem" id="buddyMessage">You're doing amazing! Your
+              progress will appear here as you learn.</p>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card card-gradient" style="background:var(--gradient-primary)">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="totalXP">0</div>
+            <div class="stat-label">Total XP</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-secondary)">
+            <div class="stat-icon">📚</div>
+            <div class="stat-value" id="totalCourses">0</div>
+            <div class="stat-label">Courses Enrolled</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-success)">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-value" id="totalBadges">0</div>
+            <div class="stat-label">Badges Earned</div>
+          </div>
+          <div class="stat-card card-gradient" style="background:var(--gradient-warm)">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-value" id="dayStreak">0</div>
+            <div class="stat-label">Day Streak</div>
+          </div>
+        </div>
+
+        <!-- XP Progress -->
+        <div class="card" style="margin-bottom:24px;padding:24px">
+          <h3 style="margin-bottom:16px">Level Progress</h3>
+          <div class="xp-label">
+            <span id="xpCurrent">Level 3 - Adventurer</span>
+            <span id="xpNext">150/300 XP to Level 4</span>
+          </div>
+          <div class="xp-bar-container">
+            <div class="xp-bar" id="xpBar" style="width:50%"></div>
+          </div>
+        </div>
+
+        <!-- Recent Badges -->
+        <div class="card" style="padding:24px">
+          <h3 style="margin-bottom:16px">Recent Badges 🏆</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:12px" id="recentBadges">
+            <span style="color:var(--text-secondary)">
+              No badges yet.
+            </span>
+          </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card" style="padding:24px;margin-top:24px">
+          <h3 style="margin-bottom:16px">
+            🏆 Top Students
+          </h3>
+
+          <div id="leaderboardContainer">
+            Loading leaderboard...
+          </div>
+        </div>
+
+        <div class="card" style="padding:24px;margin-top:24px">
+          <h3 style="margin-bottom:16px">
+            📜 Recent Activity
+          </h3>
+
+          <div id="studentActivityContainer">
+            Loading activity...
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses Section -->
+      <div id="section-courses" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>My Courses 📚</h1>
+            <p class="welcome-text">Continue where you left off</p>
+          </div>
+          <a href="browse-courses.html" class="btn btn-outline">Browse More</a>
+        </div>
+
+        <div class="grid-3" id="studentCoursesGrid"></div>
+      </div>
+
+      <!-- Course Games Section -->
+      <div id="section-games" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>My Games 🎮</h1>
+            <p class="welcome-text">
+              Games unlocked from your enrolled courses.
+            </p>
+          </div>
+        </div>
+
+        <div id="studentGamesGrid" style="
+                  display:flex;
+                  flex-wrap:wrap;
+                  gap:24px;
+                  justify-content:flex-start;
+              ">
+          <div class="card" style="padding:24px">
+            Select one of your courses to play its educational games.
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges Section -->
+      <div id="section-badges" style="display:none">
+        <div class="dashboard-header">
+          <div>
+            <h1>My Badges 🏆</h1>
+            <p class="welcome-text">Collect them all!</p>
+          </div>
+        </div>
+        <div class="grid-4" id="allBadges">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <button class="floating-chatbot-btn" onclick="toggleChildBot()" title="Child AI Chatbot">
+        🤖
+      </button>
+
+      <div id="childBotPanel" class="child-bot-panel">
+        <iframe src="child-chatbot.html"></iframe>
+      </div>
+  </div>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+  <script>
+    function showSection(name) {
+
+      document.querySelectorAll('[id^="section-"]').forEach(
+        s => s.style.display = 'none'
+      );
+
+      document.getElementById('section-' + name).style.display =
+        'block';
+
+      document.querySelectorAll('.sidebar-menu a').forEach(
+        a => a.classList.remove('active')
+      );
+
+      document.querySelector(
+        `.sidebar-menu a[href="#${name}"]`
+      )?.classList.add('active');
+
+    }
+
+    async function loadStudentDashboard() {
+      const user = await requirePageRole('student');
+      if (!user) return;
+      document.getElementById('studentName').textContent = user.display_name || 'Student';
+      document.getElementById('welcomeName').textContent = user.first_name || user.display_name || 'Student';
+      document.getElementById('studentAvatar').textContent = initials(user.first_name, user.last_name, 'S');
+      await Promise.all([
+        loadStudentCourses(),
+        loadStudentBadges(),
+        loadStudentGames(),
+        loadLeaderboard(),
+        loadStudentActivity()
+      ]);
+    }
+
+    async function loadStudentCourses() {
+
+      const grid =
+        document.getElementById('studentCoursesGrid');
+
+      if (!grid) return;
+
+      const result =
+        await apiGet(
+          '../backend/api/enrollment.php?action=my_courses'
+        );
+
+      console.log(result);
+
+      document.getElementById('totalCourses').textContent =
+        result.courses.length;
+
+      if (
+        !result.ok ||
+        !result.courses ||
+        !result.courses.length
+      ) {
+
+        grid.innerHTML =
+          `
+            <div class="card"
+                 style="padding:24px">
+                 No courses enrolled yet.
+            </div>
+            `;
+
+        return;
+      }
+
+      grid.innerHTML = result.courses.map(course => `
+
+        <div class="course-card">
+
+            <div class="course-image"
+                 style="
+                    background:var(--gradient-primary);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:4rem;
+                 ">
+                 📚
+            </div>
+
+            <div class="course-body">
+
+                <div class="course-title">
+                    ${course.title}
+                </div>
+
+                <div class="course-meta">
+                    <span>${course.skill_name || 'Course'}</span>
+                    <span>${course.game_type || 'Game'}</span>
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:12px;width:100%"
+                    onclick="
+                        window.location.href =
+                            '../games/' +
+                            '${course.game_page}' +
+                            '?csv=' +
+                            '${course.csv_file}' +
+                            '&course_id=' +
+                            '${course.course_id}';
+                    "
+                >
+                    🎮 Play Game
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join('');
+    }
+
+
+    async function loadStudentGames() {
+
+      const grid =
+        document.getElementById('studentGamesGrid');
+
+      if (!grid) return;
+
+      const result =
+        await apiGet(
+          '../backend/api/enrollment.php?action=my_courses'
+        );
+
+      if (
+        !result.ok ||
+        !result.courses ||
+        !result.courses.length
+      ) {
+
+        grid.innerHTML =
+          `
+            <div class="card"
+                 style="padding:24px">
+                 No games unlocked yet.
+            </div>
+            `;
+
+        return;
+      }
+
+      grid.innerHTML = result.courses.map(course => `
+
+        <div class="course-card"
+             style="width:305px;">
+
+             <div class="course-image"
+                  style="
+                      background:var(--gradient-primary);
+                      display:flex;
+                      align-items:center;
+                      justify-content:center;
+                      font-size:4rem;
+                  ">
+                 ${course.game_type === 'snake' ? '🐍' :
+          course.game_type === 'escape_room' ? '🔐' :
+            course.game_type === 'boxing' ? '🥊' :
+              course.game_type === 'fill_blanks' ? '✏️' :
+                '🎮'
+        }
+          </div>
+
+            <div class="course-body">
+
+                <div class="course-title">
+                    ${course.title}
+                </div>
+
+                <div class="course-meta">
+                    ${course.game_type || 'Game'}
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    style="margin-top:12px;width:100%"
+                    onclick="
+                        window.location.href =
+                            '../games/' +
+                            '${course.game_page}' +
+                            '?csv=' +
+                            '${course.csv_file}' +
+                            '&course_id=' +
+                            '${course.course_id}';
+                    "
+                >
+                    🎮 Play Game
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join('');
+    }
+    async function loadStudentBadges() {
+      const result = await apiGet('../backend/api/get_badges.php');
+      const all = document.getElementById('allBadges');
+      const recent = document.getElementById('recentBadges');
+      const totalXP = Number(result.total_xp || 0);
+      document.getElementById('dayStreak').textContent =
+        Number(result.daily_streak || 0);
+      const badges = result.badges || [];
+      document.getElementById('totalXP').textContent = totalXP;
+      document.getElementById('totalBadges').textContent = badges.length;
+      const level = getXPLevel(totalXP);
+      document.getElementById('studentLevel').textContent = `⭐ Level ${level.level} - ${level.name}`;
+      document.getElementById('xpCurrent').textContent = `Level ${level.level} - ${level.name}`;
+      document.getElementById('xpNext').textContent = `${Math.max(0, level.next - totalXP)} XP to next level`;
+      const pct = Math.min(100, Math.round(((totalXP - level.start) / (level.next - level.start)) * 100));
+      document.getElementById('xpBar').style.width = `${pct}%`;
+      if (!badges.length) {
+        all.innerHTML = '<div class="card" style="padding:24px;color:var(--text-secondary)">No badges earned yet.</div>';
+        recent.innerHTML = '<span style="color:var(--text-secondary)">No badges yet.</span>';
+        return;
+      }
+      const badgeHTML = badges.map(b => `<div class="card" style="text-align:center;padding:24px"><div style="font-size:3rem;margin-bottom:8px">${escapeHTML(b.badge_icon || '🏆')}</div><h4 style="font-size:0.95rem;margin-bottom:4px">${escapeHTML(b.badge_name || b.skill_name)}</h4><p style="font-size:0.8rem;color:var(--text-secondary)">${Number(b.xp || 0)} XP • Level ${Number(b.level || 1)}</p></div>`).join('');
+      all.innerHTML = badgeHTML;
+      recent.innerHTML = badges.slice(0, 4).map(b => `<div class="badge-item"><span class="badge-icon">${escapeHTML(b.badge_icon || '🏆')}</span> ${escapeHTML(b.badge_name || b.skill_name)}</div>`).join('');
+    }
+
+    async function loadStudentActivity() {
+
+      const result =
+        await apiGet(
+          '../backend/api/student_activity.php'
+        );
+
+      const container =
+        document.getElementById(
+          'studentActivityContainer'
+        );
+
+      if (
+        !result.ok ||
+        !result.activities.length
+      ) {
+
+        container.innerHTML =
+          'No recent activity yet.';
+
+        return;
+      }
+
+      container.innerHTML =
+        result.activities.map(a => `
+
+        <div style="
+            padding:10px 0;
+            border-bottom:1px solid #eee;
+        ">
+            🏆 ${escapeHTML(a.badge_name)}
+            (+${Number(a.xp)} XP)
+        </div>
+
+    `).join('');
+    }
+
+    const buddyResponses = [
+      "Great question! 🌟 Let me break it down step by step.",
+      "You're on the right track! 💪 Keep practicing and you'll improve.",
+      "Awesome curiosity! 🚀 Try connecting this to your course examples."
+    ];
+
+    function sendChat() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      const messages = document.getElementById('chatMessages');
+      messages.innerHTML += `<div class="chat-message sent"><div class="chat-avatar" style="background:var(--gradient-accent);color:white">🧑</div><div class="chat-bubble">${escapeHTML(msg)}</div></div>`;
+      input.value = '';
+      setTimeout(() => {
+        const response = buddyResponses[Math.floor(Math.random() * buddyResponses.length)];
+        messages.innerHTML += `<div class="chat-message"><div class="chat-avatar" style="background:var(--gradient-primary);color:white">🤖</div><div class="chat-bubble">${response}</div></div>`;
+        messages.scrollTop = messages.scrollHeight;
+      }, 700);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function loadLeaderboard() {
+
+      const result =
+        await apiGet(
+          '../backend/api/leaderboard.php'
+        );
+
+      const container =
+        document.getElementById(
+          'leaderboardContainer'
+        );
+
+      if (
+        !result.ok ||
+        !result.students ||
+        !result.students.length
+      ) {
+
+        container.innerHTML =
+          'No leaderboard data';
+
+        return;
+      }
+
+      container.innerHTML =
+        result.students.map(
+          (student, index) => `
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        padding:12px 0;
+        border-bottom:1px solid #eee;
+      ">
+
+        <span>
+          ${index + 1}.
+          ${student.display_name}
+        </span>
+
+        <strong>
+          ${student.total_xp} XP
+        </strong>
+
+      </div>
+
+    `
+        ).join('');
+    }
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      async () => {
+
+        await loadStudentDashboard();
+
+      }
+    );
+
+    function toggleChildBot() {
+      const panel =
+        document.getElementById('childBotPanel');
+
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+      } else {
+        panel.style.display = 'block';
+      }
+    }
+  </script>
+  <script src="./splash.js"></script>
+</body>
+
+</html>

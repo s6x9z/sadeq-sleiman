@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title> Fill-in-the-Blanks</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, #fbc2eb, #a18cd1, #fad0c4);
+        }
+
+        canvas {
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, .2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+            background: #fff;
+        }
+
+        #words {
+            position: absolute;
+            bottom: 400px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            max-width: 800px;
+        }
+
+        .draggable {
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #f43f5e, #ec4899);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .4);
+            transition: transform .1s;
+        }
+
+        .draggable:hover {
+            transform: scale(1.1);
+        }
+
+        #msg {
+            position: absolute;
+            top: 20px;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+        }
+
+        #backBtn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+
+            padding: 12px 20px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #6C63FF;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="game" width="800" height="500"></canvas>
+    <div id="msg">Drag the correct word into the blank</div>
+    <div id="words"></div>
+
+    <button onclick="skipQuestion()" style="
+          position:absolute;
+          bottom:330px;
+          padding:12px 20px;
+          border:none;
+          border-radius:12px;
+          background:#10B981;
+          color:white;
+          font-weight:bold;
+          cursor:pointer;
+        ">
+        Skip
+    </button>
+
+    <button onclick="goBackDashboard()" id="backBtn">
+        ⬅ Dashboard
+    </button>
+
+    <script>
+        const canvas = document.getElementById("game");
+        const ctx = canvas.getContext("2d");
+
+        let room = 1;
+
+        const blanks = [{ x: 400, y: 150, w: 180, h: 40, word: null }];
+
+        let rooms = {};
+
+        async function showAchievement(title, xp) {
+
+            alert(
+                `🎉 Achievement Unlocked!\n\n${title}\n⭐ +${xp} XP`
+            );
+
+        }
+
+        function parseCSV(text) {
+            const rows = [];
+            let row = [];
+            let cell = "";
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const next = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && next === '"') {
+                        cell += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === "," && !inQuotes) {
+                    row.push(cell);
+                    cell = "";
+                } else if ((char === "\n" || char === "\r") && !inQuotes) {
+                    if (char === "\r" && next === "\n") i++;
+                    row.push(cell);
+                    if (row.some(v => v.trim() !== "")) rows.push(row);
+                    row = [];
+                    cell = "";
+                } else {
+                    cell += char;
+                }
+            }
+
+            if (cell.length > 0 || row.length > 0) {
+                row.push(cell);
+                if (row.some(v => v.trim() !== "")) rows.push(row);
+            }
+
+            return rows;
+        }
+
+        function csvRowsToObjects(rows) {
+            const headers = rows[0].map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    obj[headers[j]] = (rows[i][j] ?? "").trim();
+                }
+                data.push(obj);
+            }
+            return data;
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function makeSentence(question, answer) {
+            const escapedAnswer = answer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(escapedAnswer, "i");
+
+            if (regex.test(question)) {
+                return question.replace(regex, "______");
+            }
+
+            return question + " ______";
+        }
+
+        function buildWords(correctAnswer) {
+            const pool = Object.values(rooms)
+                .map(r => r.answer)
+                .filter(a => a && a.toLowerCase() !== correctAnswer.toLowerCase());
+
+            const uniquePool = [...new Set(pool)];
+            const wrongWords = shuffleArray(uniquePool).slice(0, 2);
+
+            const choices = shuffleArray([correctAnswer, ...wrongWords]);
+
+            while (choices.length < 3) {
+                choices.push("none");
+            }
+
+            return shuffleArray(choices);
+        }
+
+        async function loadRoomsFromCSV() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+
+                const csvFile =
+                    params.get('csv') || 'rooms.csv';
+
+                const res = await fetch(
+                    '../generated/' +
+                    csvFile +
+                    '?v=' +
+                    Date.now()
+                );
+                const text = await res.text();
+
+                const parsed = parseCSV(text);
+                const data = csvRowsToObjects(parsed);
+
+                const csvRooms = {};
+
+                data.forEach(row => {
+                    const id = Number(row.id);
+                    if (!id) return;
+
+                    const answer = String(row.answer || "").trim();
+                    const question = String(row.question || "").trim();
+
+                    if (!question || !answer) return;
+
+                    csvRooms[id] = {
+                        sentence: makeSentence(question, answer),
+                        answer: answer,
+                        words: buildWords(answer),
+                        bg: row.accent || "#93C5FD",
+                        hint: row.hint || ""
+                    };
+                });
+
+                if (Object.keys(csvRooms).length) {
+                    rooms = csvRooms;
+                    room = 1;
+                    blanks[0].word = null;
+                    initWords();
+                    message("Drag the correct word into the blank");
+                } else {
+                    message("CSV is empty or invalid.");
+                }
+            } catch (err) {
+                console.error(err);
+                message("Could not load CSV.");
+            }
+        }
+
+        function draw() {
+            if (!rooms[room]) return;
+
+            ctx.fillStyle = rooms[room].bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "white";
+            ctx.fillRect(60, 60, 620, 180);
+
+            ctx.fillStyle = "black";
+            ctx.font = "22px Arial";
+            let s = rooms[room].sentence.replace("______", "_______");
+            ctx.fillText(s, 80, 120);
+
+            blanks.forEach(b => {
+                ctx.strokeStyle = b.word ? "#10B981" : "#F59E0B";
+                ctx.lineWidth = 3;
+                ctx.strokeRect(b.x, b.y, b.w, b.h);
+                if (b.word) {
+                    ctx.fillStyle = "#10B981";
+                    ctx.fillRect(b.x, b.y, b.w, b.h);
+                    ctx.fillStyle = "white";
+                    ctx.fillText(b.word, b.x + 12, b.y + 28);
+                }
+            });
+        }
+
+        function initWords() {
+            const container = document.getElementById("words");
+            container.innerHTML = "";
+
+            if (!rooms[room]) return;
+
+            const colors = ["#F43F5E", "#EC4899", "#8B5CF6", "#3B82F6", "#10B981", "#F59E0B"];
+            rooms[room].words.forEach((w, i) => {
+                const div = document.createElement("div");
+                div.className = "draggable";
+                div.style.background = colors[i % colors.length];
+                div.draggable = true;
+                div.textContent = w;
+                div.addEventListener("dragstart", e => {
+                    e.dataTransfer.setData("text/plain", w);
+                });
+                container.appendChild(div);
+            });
+        }
+
+        canvas.addEventListener("dragover", e => e.preventDefault());
+
+        canvas.addEventListener("drop", e => {
+            e.preventDefault();
+            const word = e.dataTransfer.getData("text/plain");
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            blanks.forEach(b => {
+                if (mx > b.x && mx < b.x + b.w && my > b.y && my < b.y + b.h) {
+                    b.word = word;
+                    checkBlank();
+                }
+            });
+        });
+
+        function checkBlank() {
+            const b = blanks[0];
+            if (!rooms[room]) return;
+
+            if (b.word && b.word.toLowerCase() === rooms[room].answer.toLowerCase()) {
+                message("✅ Correct! Next question...");
+                setTimeout(nextRoom, 700);
+            } else {
+                message("❌ Wrong, try again.");
+            }
+        }
+
+        function message(text) {
+            document.getElementById("msg").innerText = text;
+        }
+
+        function skipQuestion() {
+
+            const q = questions[currentQuestion];
+
+            alert(
+                "Correct Answer:\n\n" +
+                q.correct
+            );
+
+            playerHealth--;
+
+            updateHud();
+
+            if (playerHealth <= 0) {
+                finishGame();
+                return;
+            }
+
+            currentQuestion++;
+
+            renderQuestion();
+        }
+        async function nextRoom() {
+
+            room++;
+
+            if (room > Object.keys(rooms).length) {
+
+                await saveGameProgress();
+                await saveAnalytics(100, 1);
+
+                await showAchievement(
+                    'Word Wizard',
+                    100
+                );
+
+                window.location.href =
+                    "../frontend/student-dashboard.html";
+
+                return;
+            }
+
+            blanks[0].word = null;
+
+            initWords();
+
+            message(
+                "Drag the correct word into the blank"
+            );
+        }
+        function loop() {
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        loadRoomsFromCSV();
+        loop();
+
+        function goBackDashboard() {
+            window.location.href =
+                '../frontend/student-dashboard.html';
+        }
+
+        async function saveAnalytics(score = 100, completed = 1) {
+
+            const params =
+                new URLSearchParams(window.location.search);
+
+            const courseId =
+                params.get('course_id');
+
+            if (!courseId) return;
+
+            await fetch(
+                '../backend/api/save_game_analytics.php',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':
+                            'application/x-www-form-urlencoded'
+                    },
+                    credentials: 'include',
+                    body:
+                        'course_id=' + courseId +
+                        '&score=' + score +
+                        '&completed=' + completed
+                }
+            );
+        }
+
+        async function saveGameProgress() {
+            const params = new URLSearchParams(window.location.search);
+            const courseId = params.get('course_id');
+
+            if (!courseId) return;
+
+            await fetch('../backend/api/complete_game.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                credentials: 'same-origin',
+                body: new URLSearchParams({
+                    course_id: courseId
+                })
+            });
+        }
+    </script>
+
+</body>
+
+</html>

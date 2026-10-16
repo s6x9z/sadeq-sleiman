@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Escape the Thinking Rooms</title>
+  <style>
+    :root {
+      --panel: rgba(20, 20, 24, .72);
+      --text: #f5f7ff;
+      --muted: #cfd6ff;
+      --shadow: rgba(0, 0, 0, .35);
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at 20% 20%, #2b2b5e, #151525 60%, #0b0b12 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      overflow: hidden;
+      color: var(--text);
+    }
+
+    .wrap {
+      position: relative;
+      width: 820px;
+      height: 560px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      background: #111;
+      border-radius: 18px;
+      box-shadow: 0 20px 70px var(--shadow);
+      border: 2px solid rgba(255, 255, 255, .12);
+    }
+
+    .hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .pill {
+      backdrop-filter: blur(10px);
+      background: rgba(20, 20, 24, .72);
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 999px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .pill strong {
+      font-weight: 800;
+    }
+
+    .pill small {
+      color: var(--muted);
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      backdrop-filter: blur(10px);
+      background: rgba(20, 20, 24, .72);
+      border: 1px solid rgba(255, 255, 255, .14);
+      padding: 12px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    input {
+      width: 280px;
+      padding: 10px 12px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      background: rgba(255, 255, 255, .08);
+      color: var(--text);
+      outline: none;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, .6);
+    }
+
+    button {
+      padding: 10px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      cursor: pointer;
+      color: #0b1220;
+      background: linear-gradient(180deg, #a7f3d0, #34d399);
+    }
+
+    .btnHint {
+      background: linear-gradient(180deg, #c7d2fe, #60a5fa);
+      color: #061225;
+    }
+
+    .btnReset {
+      background: linear-gradient(180deg, #ffd6a5, #ff9f1c);
+      color: #2a1300;
+    }
+
+    .msg {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      background: rgba(20, 20, 24, .72);
+      border: 1px solid rgba(255, 255, 255, .14);
+      font-weight: 800;
+      box-shadow: 0 10px 30px var(--shadow);
+      min-width: 280px;
+      text-align: center;
+    }
+
+    .tips {
+      position: absolute;
+      bottom: 92px;
+      left: 22px;
+      width: 220px;
+      color: rgba(255, 255, 255, .85);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px var(--shadow);
+      font-size: 12.5px;
+      line-height: 1.35;
+      transition: opacity .6s ease;
+    }
+
+    .tips.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    kbd {
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-bottom-width: 2px;
+      border-radius: 7px;
+      padding: 2px 7px;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    #backBtn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+
+      padding: 12px 20px;
+
+      border: none;
+      border-radius: 12px;
+
+      background: #6C63FF;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* ===== Private Room / Invite Overlay (added safely, does not change core game logic) ===== */
+    #pregameOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(108,99,255,.45), transparent 35%),
+        radial-gradient(circle at 80% 70%, rgba(52,211,153,.20), transparent 35%),
+        rgba(5, 5, 15, .92);
+      color: var(--text);
+      padding: 20px;
+    }
+
+    #pregameOverlay.hidden {
+      display: none;
+    }
+
+    .pregame-card {
+      width: min(720px, calc(100vw - 32px));
+      background: rgba(20, 20, 30, .92);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 24px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.45);
+      padding: 28px;
+      backdrop-filter: blur(14px);
+    }
+
+    .pregame-card h1 {
+      margin: 0 0 10px;
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.1;
+    }
+
+    .pregame-card p {
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 8px 0 18px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .mode-btn {
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 16px;
+      font-size: 16px;
+      color: #07111f;
+    }
+
+    .mode-btn.friends {
+      background: linear-gradient(180deg, #c7d2fe, #60a5fa);
+    }
+
+    .room-panel {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    .room-panel.active {
+      display: block;
+    }
+
+    .room-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .room-code {
+      font-size: 30px;
+      letter-spacing: 6px;
+      font-weight: 900;
+      color: #a7f3d0;
+      background: rgba(0,0,0,.25);
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: inline-block;
+    }
+
+    .invite-input {
+      flex: 1;
+      min-width: 250px;
+      width: auto;
+      background: rgba(255,255,255,.10);
+      color: white;
+    }
+
+    .player-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .player-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .small-btn {
+      padding: 7px 10px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+
+    .danger-btn {
+      background: linear-gradient(180deg, #fecaca, #ef4444);
+      color: white;
+    }
+
+    .start-btn {
+      background: linear-gradient(180deg, #a7f3d0, #10b981);
+    }
+
+    .secondary-btn {
+      background: linear-gradient(180deg, #e0e7ff, #93c5fd);
+      color: #07111f;
+    }
+
+    .muted-note {
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+      margin-top: 10px;
+    }
+
+
+    .multiplayer-badge {
+      position: absolute;
+      top: 74px;
+      right: 18px;
+      z-index: 50;
+      background: rgba(20,20,24,.78);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #dbeafe;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 10px 30px var(--shadow);
+      display: none;
+      pointer-events: none;
+    }
+
+    .multiplayer-badge.active {
+      display: block;
+    }
+
+    .rank-board {
+      position: absolute;
+      right: 18px;
+      bottom: 92px;
+      z-index: 55;
+      min-width: 220px;
+      max-width: 260px;
+      display: none;
+      gap: 6px;
+      flex-direction: column;
+      background: rgba(20,20,24,.78);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 10px 30px var(--shadow);
+      pointer-events: none;
+    }
+
+    .rank-board.active {
+      display: flex;
+    }
+
+    .rank-title {
+      font-weight: 900;
+      font-size: 13px;
+      color: #dbeafe;
+      margin-bottom: 4px;
+    }
+
+    .rank-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.07);
+      border-radius: 10px;
+      padding: 6px 8px;
+    }
+
+    @media (max-width: 650px) {
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pregame-card {
+        padding: 20px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Private room / invite pre-game screen. Single player keeps the original game unchanged. -->
+  <div id="pregameOverlay">
+    <div class="pregame-card">
+      <h1>🔐 Escape the Thinking Rooms</h1>
+      <p>
+        Choose how you want to play. <strong>Play Alone</strong> starts the game exactly like before.
+        <strong>Play with Friends</strong> creates a private room with an invite link and a 6-digit room code.
+      </p>
+
+      <div class="mode-grid" id="modeChoices">
+        <button class="mode-btn" onclick="startSinglePlayer()">🎮 Play Alone</button>
+        <button class="mode-btn friends" onclick="createMultiplayerRoom()">👥 Play with Friends</button>
+      </div>
+
+      <div id="roomPanel" class="room-panel">
+        <h2 style="margin:0 0 8px;">Private Room</h2>
+        <p id="roomStatusText">Share this invite with your friends. The host starts when ready.</p>
+
+        <div style="margin:12px 0;">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">Room Code</div>
+          <div class="room-code" id="displayRoomCode">000000</div>
+        </div>
+
+        <div class="room-row">
+          <input id="inviteLinkInput" class="invite-input" readonly value="">
+          <button class="small-btn secondary-btn" onclick="copyInviteLink()">Copy Link</button>
+          <button class="small-btn secondary-btn" onclick="copyRoomCode()">Copy Code</button>
+        </div>
+
+        <div class="player-list" id="playerList"></div>
+
+        <div class="room-row">
+          <button id="hostStartBtn" class="start-btn" onclick="hostStartGame()">Start Game</button>
+          <button class="danger-btn" onclick="leaveRoom()">Leave Room</button>
+        </div>
+
+        <div class="muted-note">
+          Demo note: this adds private room entry, invite links, codes, host start, leave, and kick UI.
+          Real-time joining from different devices needs the backend room API connected next.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <canvas id="game" width="820" height="560"></canvas>
+
+    <div class="hud">
+      <div class="pill" id="roomPill">
+        <strong>Room 1</strong>
+        <small id="roomName">Loading…</small>
+      </div>
+
+      <div class="pill">
+        <strong>Score</strong>
+        <small id="score">0</small>
+      </div>
+
+      <div class="pill">
+        <strong>Key</strong>
+        <small id="keyStatus">No</small>
+      </div>
+    </div>
+
+    <div class="msg" id="msg">Loading rooms from CSV…</div>
+    <div class="multiplayer-badge" id="multiplayerBadge">👥 Multiplayer Room</div>
+    <div class="rank-board" id="rankBoard">
+      <div class="rank-title">🏆 Room answers</div>
+      <div id="rankRows"></div>
+    </div>
+
+    <div class="tips">
+      <div style="font-weight:800; margin-bottom:6px;">Controls</div>
+      Move: <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd><br>
+      Tip: Answer correctly to get the key, then walk into the door.
+    </div>
+
+    <div class="controls">
+      <input id="answer" placeholder="Type your answer…" />
+      <button onclick="checkAnswer()">Submit</button>
+      <button class="btnHint" onclick="showHint()">Hint</button>
+      <button onclick="skipQuestion()">Skip</button>
+      <button class="btnReset" onclick="resetGame()">Reset</button>
+    </div>
+  </div>
+
+  <button onclick="goBackDashboard()" id="backBtn">
+    ⬅ Dashboard
+  </button>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    let room = 1;
+    let doorOpen = false;
+    let score = 0;
+    let hasKey = false;
+
+    const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+    const player = { x: 80, y: 430, w: 34, h: 34, speed: 3.6 };
+    const door = { x: 720, y: 250, w: 62, h: 118 };
+    const board = { x: 70, y: 70, w: 540, h: 170 };
+
+    let rooms = {
+      1: {
+        name: "Math Wall",
+        theme: "Space",
+        palette: { sky1: "#0b102a", sky2: "#1b2a6b", floor: "#101520", accent: "#7dd3fc" },
+        question: "Loading...",
+        answer: "",
+        hint: "Loading...",
+        goal: "get_key",
+        drawDecor: drawSpaceDecor
+      }
+    };
+
+    let transition = { active: false, t: 0 };
+
+    const msg = document.getElementById("msg");
+    const roomPill = document.getElementById("roomPill");
+    const roomName = document.getElementById("roomName");
+    const scoreEl = document.getElementById("score");
+    const keyStatus = document.getElementById("keyStatus");
+
+    async function showAchievement(title, xp) {
+
+      alert(
+        `🎉 Achievement Unlocked!\n\n${title}\n⭐ +${xp} XP`
+      );
+
+    }
+
+    function setMessage(text, type = "info") {
+      msg.textContent = text;
+      if (type === "good") msg.style.color = "#8bffcc";
+      else if (type === "bad") msg.style.color = "#ffb3b3";
+      else msg.style.color = "#ffffff";
+    }
+
+    function updateHUD() {
+      roomPill.querySelector("strong").textContent = `Room ${room}`;
+      roomName.textContent = `${rooms[room].name} • ${rooms[room].theme}`;
+      scoreEl.textContent = score;
+      keyStatus.textContent = hasKey ? "Yes" : "No";
+    }
+
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    function drawRoundedRect(x, y, w, h, r, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+    }
+
+    function gradientBackground(p) {
+      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      g.addColorStop(0, p.sky2);
+      g.addColorStop(1, p.sky1);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = p.floor;
+      ctx.fillRect(0, 430, canvas.width, 130);
+    }
+
+    function drawBoard(roomObj) {
+      ctx.globalAlpha = 0.25;
+      drawRoundedRect(board.x + 6, board.y + 8, board.w, board.h, 18, "#000", null);
+      ctx.globalAlpha = 1;
+
+      drawRoundedRect(board.x, board.y, board.w, board.h, 18, "rgba(255,255,255,.86)", "rgba(0,0,0,.18)");
+
+      ctx.fillStyle = "rgba(0,0,0,.08)";
+      drawRoundedRect(board.x + 18, board.y + 16, 230, 32, 16, "rgba(0,0,0,.07)", null);
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "bold 18px Arial";
+      ctx.fillText(`${roomObj.theme} • ${roomObj.name}`, board.x + 30, board.y + 38);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "16px Arial";
+      wrapText(roomObj.question, board.x + 30, board.y + 70, board.w - 60, 22);
+    }
+
+    function wrapText(text, x, y, maxWidth, lineHeight) {
+      const paragraphs = text.split("\n");
+      for (const para of paragraphs) {
+        const words = para.split(" ");
+        let line = "";
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line + words[i] + " ";
+          const m = ctx.measureText(testLine);
+          if (m.width > maxWidth && i > 0) {
+            ctx.fillText(line, x, y);
+            line = words[i] + " ";
+            y += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, x, y);
+        y += lineHeight;
+      }
+    }
+
+    function drawDoor(p) {
+      ctx.fillStyle = "rgba(0,0,0,.35)";
+      ctx.fillRect(door.x - 6, door.y - 6, door.w + 12, door.h + 12);
+
+      const body = doorOpen ? "#16a34a" : "#8b5a2b";
+      ctx.fillStyle = body;
+      drawRoundedRect(door.x, door.y, door.w, door.h, 10, body, "rgba(0,0,0,.25)");
+
+      ctx.fillStyle = "rgba(255,255,255,.85)";
+      ctx.beginPath();
+      ctx.arc(door.x + door.w - 14, door.y + door.h / 2, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.font = "bold 14px Arial";
+      ctx.fillStyle = "white";
+      ctx.fillText("EXIT", door.x + 13, door.y - 10);
+
+      if (doorOpen) {
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = p.accent;
+        ctx.lineWidth = 10;
+        ctx.strokeRect(door.x - 8, door.y - 8, door.w + 16, door.h + 16);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawPlayer() {
+      ctx.globalAlpha = 0.25;
+      ctx.beginPath();
+      ctx.ellipse(player.x + player.w / 2, player.y + player.h - 2, 18, 6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#000";
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      drawRoundedRect(player.x, player.y, player.w, player.h, 10, "#2563eb", "rgba(0,0,0,.22)");
+
+      ctx.fillStyle = "rgba(255,255,255,.92)";
+      ctx.beginPath(); ctx.arc(player.x + 12, player.y + 14, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(player.x + 22, player.y + 14, 3, 0, Math.PI * 2); ctx.fill();
+
+      ctx.strokeStyle = "rgba(255,255,255,.9)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(player.x + 17, player.y + 22, 7, 0.2 * Math.PI, 0.8 * Math.PI);
+      ctx.stroke();
+    }
+
+    function playerColorValue(colorName) {
+      const colors = {
+        blue: "#2563eb",
+        red: "#ef4444",
+        green: "#22c55e",
+        white: "#f8fafc"
+      };
+
+      return colors[String(colorName || "").toLowerCase()] || "#2563eb";
+    }
+
+    function drawOnePlayerAvatar(x, y, colorName, name, isMe = false) {
+      const fill = playerColorValue(colorName);
+
+      ctx.globalAlpha = 0.25;
+      ctx.beginPath();
+      ctx.ellipse(x + player.w / 2, y + player.h - 2, 18, 6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#000";
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      drawRoundedRect(x, y, player.w, player.h, 10, fill, "rgba(0,0,0,.35)");
+
+      ctx.fillStyle = String(colorName).toLowerCase() === "white" ? "#111827" : "rgba(255,255,255,.95)";
+      ctx.beginPath(); ctx.arc(x + 12, y + 14, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + 22, y + 14, 3, 0, Math.PI * 2); ctx.fill();
+
+      ctx.strokeStyle = String(colorName).toLowerCase() === "white" ? "#111827" : "rgba(255,255,255,.95)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x + 17, y + 22, 7, 0.2 * Math.PI, 0.8 * Math.PI);
+      ctx.stroke();
+
+      if (isMe) {
+        ctx.strokeStyle = "#facc15";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x - 3, y - 3, player.w + 6, player.h + 6);
+      }
+
+      ctx.font = "bold 11px Arial";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.fillText((name || "Player").slice(0, 12), x + player.w / 2, y - 8);
+      ctx.textAlign = "left";
+    }
+
+    function drawMultiplayerPlayers() {
+      if (gameRoomState.mode !== "multi" || !gameRoomState.players.length) {
+        drawPlayer();
+        return;
+      }
+
+      const activePlayers = gameRoomState.players
+        .filter(p => Number(p.is_kicked) !== 1)
+        .slice(0, 4);
+
+      activePlayers.forEach((p, index) => {
+        const color = p.color || ["blue", "red", "green", "white"][index] || "blue";
+        const isMe = Number(p.user_id) === Number(gameRoomState.selfUserId);
+        const x = isMe ? player.x : Number(p.pos_x || 80);
+        const y = isMe ? player.y : Number(p.pos_y || 430);
+        drawOnePlayerAvatar(x, y, color, p.display_name, isMe);
+      });
+    }
+
+    function drawSpaceDecor() {
+      for (let i = 0; i < 90; i++) {
+        const x = (i * 97) % canvas.width;
+        const y = (i * 53) % 400;
+        const s = (i % 3) + 1;
+        ctx.globalAlpha = 0.65;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(x, y, s, s);
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      ctx.arc(720, 110, 55, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(125, 211, 252, .9)";
+      ctx.fill();
+      ctx.globalAlpha = 0.4;
+      ctx.beginPath();
+      ctx.ellipse(720, 120, 72, 18, -0.2, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255,255,255,.8)";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawJungleDecor() {
+      ctx.strokeStyle = "rgba(134, 239, 172, .6)";
+      ctx.lineWidth = 5;
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        ctx.moveTo(40 + i * 130, 0);
+        ctx.bezierCurveTo(30 + i * 130, 80, 70 + i * 130, 160, 40 + i * 130, 240);
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < 10; i++) {
+        const x = 60 + i * 70;
+        ctx.fillStyle = "rgba(34,197,94,.25)";
+        ctx.beginPath();
+        ctx.ellipse(x, 70 + (i % 3) * 15, 24, 12, (i % 5) * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawOceanDecor() {
+      for (let i = 0; i < 40; i++) {
+        const x = (i * 127) % canvas.width;
+        const y = 80 + (i * 61) % 320;
+        ctx.globalAlpha = 0.25;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, 6 + (i % 3) * 4, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = "rgba(16,185,129,.5)";
+      ctx.lineWidth = 6;
+      for (let i = 0; i < 8; i++) {
+        const baseX = 80 + i * 90;
+        ctx.beginPath();
+        ctx.moveTo(baseX, 560);
+        ctx.bezierCurveTo(baseX - 20, 520, baseX + 20, 480, baseX - 10, 430);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = "rgba(251,191,36,.9)";
+      ctx.beginPath();
+      ctx.ellipse(690, 390, 18, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(708, 390);
+      ctx.lineTo(724, 380);
+      ctx.lineTo(724, 400);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function drawCastleDecor() {
+      ctx.fillStyle = "rgba(255,255,255,.12)";
+      ctx.fillRect(30, 210, 70, 220);
+      ctx.fillRect(120, 240, 70, 190);
+      ctx.fillRect(210, 200, 70, 230);
+
+      ctx.fillStyle = "rgba(252,165,165,.85)";
+      ctx.beginPath(); ctx.moveTo(65, 190); ctx.lineTo(65, 210); ctx.lineTo(95, 200); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(155, 220); ctx.lineTo(155, 240); ctx.lineTo(185, 230); ctx.closePath(); ctx.fill();
+
+      ctx.globalAlpha = 0.75;
+      ctx.beginPath();
+      ctx.arc(740, 90, 40, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,.28)";
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    function update() {
+      const oldX = player.x;
+      const oldY = player.y;
+
+      if (keys.ArrowUp) player.y -= player.speed;
+      if (keys.ArrowDown) player.y += player.speed;
+      if (keys.ArrowLeft) player.x -= player.speed;
+      if (keys.ArrowRight) player.x += player.speed;
+
+      player.x = clamp(player.x, 10, canvas.width - player.w - 10);
+      player.y = clamp(player.y, 430 - 95, canvas.height - player.h - 10);
+
+      if (
+        gameRoomState.mode === "multi" &&
+        gameRoomState.roomCode &&
+        (Math.abs(oldX - player.x) > 1 || Math.abs(oldY - player.y) > 1)
+      ) {
+        maybeSyncMyPosition();
+      }
+
+      checkDoor();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const r = rooms[room];
+      gradientBackground(r.palette);
+      r.drawDecor(r.palette);
+
+      ctx.globalAlpha = 0.18;
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 430, canvas.width, 3);
+      ctx.globalAlpha = 1;
+
+      drawBoard(r);
+      drawDoor(r.palette);
+      drawMultiplayerPlayers();
+
+      if (hasKey) {
+        ctx.font = "bold 22px Arial";
+        ctx.fillStyle = "#ffd700";
+        ctx.fillText("🔑", player.x + 6, player.y - 8);
+      }
+
+      if (transition.active) {
+        transition.t += 0.04;
+        const a = Math.sin(Math.min(transition.t, Math.PI)) * 0.85;
+        ctx.globalAlpha = a;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+        if (transition.t >= Math.PI) {
+          transition.active = false;
+          transition.t = 0;
+        }
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key in keys) {
+        keys[e.key] = true;
+        e.preventDefault();
+      }
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.key in keys) {
+        keys[e.key] = false;
+        e.preventDefault();
+      }
+    });
+
+    async function checkAnswer() {
+      const input = document.getElementById("answer").value.trim().toLowerCase();
+      const r = rooms[room];
+
+      if (!input) {
+        setMessage("Type an answer first", "bad");
+        return;
+      }
+
+      const isCorrect = input === r.answer;
+
+      if (gameRoomState.mode === "multi" && gameRoomState.roomCode) {
+
+        if (!isCorrect) {
+          setMessage("❌ Not quite. Try again. Correct answers are ranked!", "bad");
+          return;
+        }
+
+        try {
+          const result = await apiPostRoom("submit_ranked_answer", {
+            room_code: gameRoomState.roomCode,
+            room_number: room,
+            is_correct: "1"
+          });
+
+          document.getElementById("answer").value = "";
+
+          if (result.already_answered) {
+            setMessage("✅ You already answered this room. Wait for the others.", "info");
+          } else {
+            score += Number(result.points || 0);
+            setMessage(
+              "✅ Correct! Rank #" +
+              result.rank +
+              " — +" +
+              result.points +
+              " points. Wait until everyone answers.",
+              "good"
+            );
+          }
+
+          updateHUD();
+          await refreshMultiplayerState();
+
+        } catch (err) {
+          alert("Could not submit answer: " + err.message);
+        }
+
+        return;
+      }
+
+      if (isCorrect) {
+        if (!doorOpen) {
+          score += 10;
+        }
+
+        if (r.goal === "get_key") {
+          hasKey = true;
+          doorOpen = true;
+          setMessage("✅ Correct! You got the key. Walk to the door!", "good");
+        } else {
+          doorOpen = true;
+          setMessage("✅ Correct! Door unlocked — walk into EXIT!", "good");
+        }
+
+        updateHUD();
+      } else {
+        doorOpen = false;
+        hasKey = false;
+        updateHUD();
+        setMessage("❌ Not quite. Try again (or use a hint).", "bad");
+      }
+    }
+
+    function checkDoor() {
+      if (!doorOpen || !hasKey) return;
+
+      const hit =
+        player.x < door.x + door.w &&
+        player.x + player.w > door.x &&
+        player.y < door.y + door.h &&
+        player.y + player.h > door.y;
+
+      if (hit) {
+        nextRoom();
+      }
+    }
+
+    async function nextRoom() {
+      transition.active = true;
+
+      if (gameRoomState.mode === "multi" && gameRoomState.roomCode && !gameRoomState.isHost) {
+        setMessage("⏳ Wait for the host to move everyone to the next room.", "info");
+        return;
+      }
+
+      if (room === Object.keys(rooms).length) {
+
+        setMessage(
+          "You escaped all rooms! Amazing thinking!",
+          "good"
+        );
+
+        setTimeout(async () => {
+
+          await saveGameProgress();
+          await saveAnalytics(100, 1);
+
+          await showAchievement(
+            'Escape Room Master',
+            100
+          );
+
+          window.location.href =
+            "../frontend/student-dashboard.html";
+
+        }, 350);
+
+        return;
+      }
+
+      room++;
+      doorOpen = false;
+      hasKey = false;
+      gameRoomState.answerLocked = false;
+      gameRoomState.lastWinnerName = null;
+      gameRoomState.roomAnswers = [];
+      document.getElementById("answer").value = "";
+      setMessage("New room! Everyone answers. Door opens after all active players answer.", "info");
+
+      player.x = 80;
+      player.y = 430;
+
+      updateHUD();
+      renderRankBoard();
+
+      if (gameRoomState.mode === "multi" && gameRoomState.roomCode && gameRoomState.isHost) {
+        try {
+          await apiPostRoom("next_room", {
+            room_code: gameRoomState.roomCode,
+            room_number: room
+          });
+
+          await apiPostRoom("update_position", {
+            room_code: gameRoomState.roomCode,
+            x: Math.round(player.x),
+            y: Math.round(player.y)
+          });
+
+        } catch (err) {
+          console.warn("Could not sync next room:", err.message);
+        }
+      }
+    }
+
+    function showHint() {
+      setMessage("Hint: " + rooms[room].hint, "info");
+    }
+
+    function skipQuestion() {
+      const r = rooms[room];
+
+      if (!r) {
+        setMessage("No question loaded yet.", "bad");
+        return;
+      }
+
+      if (gameRoomState.mode === "multi" && gameRoomState.roomCode) {
+        setMessage(
+          "⏭️ Skip: the answer is '" +
+          r.answer +
+          "'. No points awarded. Try answering if the room is still open.",
+          "info"
+        );
+        return;
+      }
+
+      setMessage("⏭️ Skipped. Correct answer: " + r.answer, "info");
+      document.getElementById("answer").value = "";
+    }
+
+    function resetGame() {
+      room = 1;
+      doorOpen = false;
+      hasKey = false;
+      score = 0;
+      player.x = 80;
+      player.y = 430;
+      document.getElementById("answer").value = "";
+      updateHUD();
+      setMessage("Use arrow keys to walk to the wall", "info");
+    }
+
+    setTimeout(() => {
+      const tips = document.querySelector(".tips");
+      tips.classList.add("hide");
+    }, 10000);
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          row.push(cell);
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i++;
+          row.push(cell);
+          if (row.some(v => v.trim() !== "")) rows.push(row);
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell);
+        if (row.some(v => v.trim() !== "")) rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function csvRowsToObjects(rows) {
+      const headers = rows[0].map(h => h.trim());
+      const data = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const obj = {};
+        for (let j = 0; j < headers.length; j++) {
+          obj[headers[j]] = (rows[i][j] ?? "").trim();
+        }
+        data.push(obj);
+      }
+      return data;
+    }
+
+    async function loadRoomsFromCSV() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+
+        const csvFile =
+          params.get('csv') || 'rooms.csv';
+
+
+        const res = await fetch(
+          '../generated/' +
+          csvFile +
+          '?v=' +
+          new Date().getTime()
+        );
+        const text = await res.text();
+
+        const parsed = parseCSV(text);
+        const data = csvRowsToObjects(parsed);
+
+        const decorMap = {
+          space: drawSpaceDecor,
+          jungle: drawJungleDecor,
+          ocean: drawOceanDecor,
+          castle: drawCastleDecor
+        };
+
+        const csvRooms = {};
+
+        data.forEach(row => {
+          const id = Number(row.id);
+          if (!id) return;
+
+          csvRooms[id] = {
+            name: row.name,
+            theme: row.theme,
+            palette: {
+              sky1: row.sky1,
+              sky2: row.sky2,
+              floor: row.floor,
+              accent: row.accent
+            },
+            question: row.question,
+            answer: String(row.answer).toLowerCase(),
+            hint: row.hint,
+            goal: row.goal || "get_key",
+            drawDecor: decorMap[(row.decor || "").toLowerCase()] || drawSpaceDecor
+          };
+        });
+
+        if (Object.keys(csvRooms).length) {
+          rooms = csvRooms;
+          updateHUD();
+          setMessage("Rooms loaded from external CSV", "good");
+        } else {
+          setMessage("CSV is empty or invalid", "bad");
+        }
+      } catch (err) {
+        console.error(err);
+        setMessage("Could not load rooms.csv", "bad");
+      }
+    }
+
+
+    /* ===== Real private room / invite logic connected to backend/api/rooms.php ===== */
+    const gameRoomState = {
+      mode: "single",
+      roomCode: null,
+      isHost: false,
+      players: [],
+      pollTimer: null,
+      positionTimer: null,
+      selfUserId: null,
+      answerLocked: false,
+      lastWinnerName: null,
+      roomAnswers: [],
+      lastPositionSync: 0
+    };
+
+    function roomApiURL(action) {
+      return "../backend/api/rooms.php?action=" + encodeURIComponent(action);
+    }
+
+    function getCurrentGamePage() {
+      const path = window.location.pathname.split("/").pop();
+      return path || "EscapeRoomGame.html";
+    }
+
+    function getCSVFile() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("csv") || "rooms.csv";
+    }
+
+    function getCourseId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("course_id") || "";
+    }
+
+    function buildInviteURL(code) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("room", code);
+      url.searchParams.set("mode", "multi");
+      return url.toString();
+    }
+
+    async function apiPostRoom(action, data) {
+      const body = new URLSearchParams(data || {});
+      body.set("action", action);
+
+      const res = await fetch("../backend/api/rooms.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        credentials: "include",
+        body
+      });
+
+      const json = await res.json();
+
+      if (!json.ok) {
+        throw new Error(json.error || "Room request failed");
+      }
+
+      return json;
+    }
+
+    async function apiGetRoom(action, params = {}) {
+      const url = new URL("../backend/api/rooms.php", window.location.href);
+      url.searchParams.set("action", action);
+
+      Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.set(key, value);
+      });
+
+      const res = await fetch(url.toString(), {
+        credentials: "include"
+      });
+
+      const json = await res.json();
+
+      if (!json.ok) {
+        throw new Error(json.error || "Room request failed");
+      }
+
+      return json;
+    }
+
+    function playerColorLabel(color, index) {
+      return color || ["blue", "red", "green", "white"][index] || "blue";
+    }
+
+    function renderPlayers() {
+      const list = document.getElementById("playerList");
+      if (!list) return;
+
+      if (!gameRoomState.players.length) {
+        list.innerHTML = `
+          <div class="player-card">
+            <span>No players yet.</span>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = gameRoomState.players.slice(0, 4).map((player, index) => {
+        const hostBadge = Number(player.is_host) === 1 ? " 👑 Host" : "";
+        const kickedText = Number(player.is_kicked) === 1 ? " — kicked" : "";
+        const color = playerColorLabel(player.color, index);
+        const kickButton = gameRoomState.isHost && Number(player.is_host) !== 1 && Number(player.is_kicked) !== 1
+          ? `<button class="small-btn danger-btn" onclick="kickPlayer(${Number(player.user_id)})">Kick</button>`
+          : "";
+
+        return `
+          <div class="player-card">
+            <span>
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${playerColorValue(color)};margin-right:6px;border:1px solid rgba(255,255,255,.8)"></span>
+              🧑 ${player.display_name || "Player"}${hostBadge}${kickedText}
+              <small style="color:rgba(255,255,255,.65)"> — ${color} — ${Number(player.score || 0)} pts</small>
+            </span>
+            ${kickButton}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderRankBoard() {
+      const board = document.getElementById("rankBoard");
+      const rows = document.getElementById("rankRows");
+      if (!board || !rows) return;
+
+      if (gameRoomState.mode !== "multi") {
+        board.classList.remove("active");
+        return;
+      }
+
+      board.classList.add("active");
+
+      if (!gameRoomState.roomAnswers.length) {
+        rows.innerHTML = `<div class="rank-row"><span>No correct answers yet</span><span>0/4</span></div>`;
+        return;
+      }
+
+      rows.innerHTML = gameRoomState.roomAnswers.map(a => `
+        <div class="rank-row">
+          <span>#${a.answer_rank} ${a.display_name}</span>
+          <span>+${a.points_awarded}</span>
+        </div>
+      `).join("");
+    }
+
+    function hidePregameOverlay(message = "Game started! Good luck.") {
+      const overlay = document.getElementById("pregameOverlay");
+      if (overlay) overlay.classList.add("hidden");
+
+      const badge = document.getElementById("multiplayerBadge");
+      if (badge && gameRoomState.mode === "multi") {
+        badge.classList.add("active");
+        badge.textContent = "👥 Room " + gameRoomState.roomCode;
+      }
+
+      setMessage(message, "info");
+    }
+
+    function startSinglePlayer() {
+      gameRoomState.mode = "single";
+      if (gameRoomState.pollTimer) {
+        clearInterval(gameRoomState.pollTimer);
+        gameRoomState.pollTimer = null;
+      }
+      renderRankBoard();
+      hidePregameOverlay("Single player started. Use arrow keys to play!");
+    }
+
+    async function createMultiplayerRoom() {
+      try {
+        document.getElementById("roomPanel").classList.add("active");
+        document.getElementById("roomStatusText").textContent =
+          "Creating private room...";
+
+        const result = await apiPostRoom("create", {
+          game_page: getCurrentGamePage(),
+          csv_file: getCSVFile(),
+          course_id: getCourseId()
+        });
+
+        gameRoomState.mode = "multi";
+        gameRoomState.roomCode = result.room_code;
+        gameRoomState.isHost = true;
+
+        document.getElementById("displayRoomCode").textContent = result.room_code;
+        document.getElementById("inviteLinkInput").value = buildInviteURL(result.room_code);
+        document.getElementById("roomStatusText").textContent =
+          "You are the host. Share the invite link or 6-digit code, then start when ready.";
+
+        const startBtn = document.getElementById("hostStartBtn");
+        if (startBtn) startBtn.style.display = "inline-block";
+
+        await apiPostRoom("update_position", {
+          room_code: gameRoomState.roomCode,
+          x: Math.round(player.x),
+          y: Math.round(player.y)
+        });
+
+        await refreshMultiplayerState();
+        startRoomPolling();
+      } catch (err) {
+        alert("Could not create room: " + err.message);
+      }
+    }
+
+    async function joinRoomFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("room");
+      const mode = params.get("mode");
+
+      if (!code || mode !== "multi") return;
+
+      try {
+        gameRoomState.mode = "multi";
+        gameRoomState.roomCode = code;
+        gameRoomState.isHost = false;
+
+        document.getElementById("roomPanel").classList.add("active");
+        document.getElementById("displayRoomCode").textContent = code;
+        document.getElementById("inviteLinkInput").value = window.location.href;
+        document.getElementById("roomStatusText").textContent =
+          "Joining private room...";
+
+        const startBtn = document.getElementById("hostStartBtn");
+        if (startBtn) startBtn.style.display = "none";
+
+        await apiPostRoom("join", {
+          room_code: code
+        });
+
+        document.getElementById("roomStatusText").textContent =
+          "You joined a private room. Wait for the host to start.";
+
+        await apiPostRoom("update_position", {
+          room_code: gameRoomState.roomCode,
+          x: Math.round(player.x),
+          y: Math.round(player.y)
+        });
+
+        await refreshMultiplayerState();
+        startRoomPolling();
+      } catch (err) {
+
+  if (
+    String(err.message)
+      .toLowerCase()
+      .includes("not authenticated")
+  ) {
+
+    const returnUrl =
+      encodeURIComponent(window.location.href);
+
+    window.location.href =
+      "../frontend/login.html?return=" +
+      returnUrl;
+
+    return;
+  }
+
+  alert("Could not join room: " + err.message);
+}
+    }
+
+    async function refreshRoomStatus() {
+      return refreshMultiplayerState();
+    }
+
+    async function refreshMultiplayerState() {
+      if (!gameRoomState.roomCode) return;
+
+      try {
+        const result = await apiGetRoom("sync_state", {
+          room_code: gameRoomState.roomCode,
+          room_number: room
+        });
+
+        gameRoomState.players = result.players || [];
+        gameRoomState.roomAnswers = result.answers || [];
+
+        if (result.current_user_id) {
+          gameRoomState.selfUserId = Number(result.current_user_id);
+        }
+
+        renderPlayers();
+        renderRankBoard();
+
+        const roomData = result.room || {};
+        const activePlayers = gameRoomState.players
+          .filter(p => Number(p.is_kicked) !== 1)
+          .slice(0, 4);
+
+        if (roomData.current_room) {
+          const backendRoom = Number(roomData.current_room);
+
+          if (backendRoom && backendRoom !== room) {
+            room = backendRoom;
+            doorOpen = false;
+            hasKey = false;
+            gameRoomState.answerLocked = false;
+            gameRoomState.lastWinnerName = null;
+            gameRoomState.roomAnswers = [];
+            document.getElementById("answer").value = "";
+            player.x = 80;
+            player.y = 430;
+            updateHUD();
+            renderRankBoard();
+            setMessage("➡️ Host moved everyone to Room " + room + ".", "info");
+          }
+        }
+
+        const answeredCount = gameRoomState.roomAnswers.length;
+        const neededCount = Math.max(1, activePlayers.length);
+
+        if (answeredCount > 0 && answeredCount < neededCount) {
+          doorOpen = false;
+          hasKey = false;
+          gameRoomState.answerLocked = false;
+          setMessage(
+            "✅ " +
+            answeredCount +
+            "/" +
+            neededCount +
+            " players answered. Door opens when everyone answers.",
+            "info"
+          );
+          updateHUD();
+        }
+
+        if (answeredCount >= neededCount && neededCount > 0) {
+          doorOpen = true;
+          hasKey = true;
+          gameRoomState.answerLocked = true;
+          setMessage(
+            "🔓 Everyone answered! Door is open. Host walks to EXIT to move the room.",
+            "good"
+          );
+          updateHUD();
+        }
+
+        if (roomData.status === "started") {
+          hidePregameOverlay("Room started. Work together to escape!");
+        }
+      } catch (err) {
+        console.warn("Room status error:", err.message);
+      }
+    }
+
+    async function maybeSyncMyPosition() {
+      const now = Date.now();
+
+      if (now - gameRoomState.lastPositionSync < 180) {
+        return;
+      }
+
+      gameRoomState.lastPositionSync = now;
+
+      try {
+        await apiPostRoom("update_position", {
+          room_code: gameRoomState.roomCode,
+          x: Math.round(player.x),
+          y: Math.round(player.y)
+        });
+      } catch (err) {
+        console.warn("Position sync failed:", err.message);
+      }
+    }
+
+    function startRoomPolling() {
+      if (gameRoomState.pollTimer) {
+        clearInterval(gameRoomState.pollTimer);
+      }
+
+      gameRoomState.pollTimer = setInterval(refreshMultiplayerState, 700);
+    }
+
+    async function copyInviteLink() {
+      const input = document.getElementById("inviteLinkInput");
+      input.select();
+      input.setSelectionRange(0, 99999);
+
+      try {
+        await navigator.clipboard.writeText(input.value);
+        alert("Invite link copied!");
+      } catch (_) {
+        alert("Copy this invite link:\n" + input.value);
+      }
+    }
+
+    async function copyRoomCode() {
+      const code = gameRoomState.roomCode || document.getElementById("displayRoomCode").textContent;
+      try {
+        await navigator.clipboard.writeText(code);
+        alert("Room code copied!");
+      } catch (_) {
+        alert("Room code: " + code);
+      }
+    }
+
+    async function kickPlayer(userId) {
+      if (!gameRoomState.isHost || !gameRoomState.roomCode) return;
+
+      try {
+        await apiPostRoom("kick", {
+          room_code: gameRoomState.roomCode,
+          target_user_id: userId
+        });
+        await refreshRoomStatus();
+      } catch (err) {
+        alert("Could not kick player: " + err.message);
+      }
+    }
+
+    async function leaveRoom() {
+      try {
+        if (gameRoomState.roomCode) {
+          await apiPostRoom("leave", {
+            room_code: gameRoomState.roomCode
+          });
+        }
+      } catch (_) {}
+
+      if (gameRoomState.pollTimer) {
+        clearInterval(gameRoomState.pollTimer);
+      }
+
+      window.location.href = "../frontend/student-dashboard.html";
+    }
+
+    async function hostStartGame() {
+      if (!gameRoomState.isHost || !gameRoomState.roomCode) return;
+
+      try {
+        await apiPostRoom("start", {
+          room_code: gameRoomState.roomCode
+        });
+        hidePregameOverlay("Game Started!");
+      } catch (err) {
+        alert("Could not start game: " + err.message);
+      }
+    }
+
+    joinRoomFromURL();
+
+
+    updateHUD();
+    loop();
+    loadRoomsFromCSV();
+
+    function goBackDashboard() {
+      window.location.href =
+        '../frontend/student-dashboard.html';
+    }
+
+    async function saveAnalytics(score = 100, completed = 1) {
+
+      const params =
+        new URLSearchParams(window.location.search);
+
+      const courseId =
+        params.get('course_id');
+
+      if (!courseId) return;
+
+      await fetch(
+        '../backend/api/save_game_analytics.php',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/x-www-form-urlencoded'
+          },
+          credentials: 'include',
+          body:
+            'course_id=' + courseId +
+            '&score=' + score +
+            '&completed=' + completed
+        }
+      );
+    }
+
+    async function saveGameProgress() {
+      const params = new URLSearchParams(window.location.search);
+      const courseId = params.get('course_id');
+
+      if (!courseId) return;
+
+      await fetch('../backend/api/complete_game.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        credentials: 'same-origin',
+        body: new URLSearchParams({
+          course_id: courseId
+        })
+      });
+    }
+  </script>
+</body>
+
+</html>

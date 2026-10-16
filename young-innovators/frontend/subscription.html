@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./logo.png" type="image/png">
+  <title>Pricing - Young Innovators</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <img src="./logo.png" alt="Young Innovators" class="splash-logo">
+    <div class="splash-title">Young Innovators</div>
+    <div class="splash-subtitle">Learn, Play &amp; Innovate!</div>
+    <div class="splash-loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="./logo.png" alt="Young Innovators" class="logo-icon"
+          style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+        <span>Young Innovators</span>
+      </a>
+      <div class="navbar-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="browse-courses.html">Courses</a>
+        <a href="subscription.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="navbar-actions" id="navActions">
+        <a href="login.html" class="btn btn-outline btn-sm">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+      </div>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </nav>
+
+  <div style="padding-top:100px;min-height:100vh;padding-bottom:60px">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:48px">
+        <div class="badge">💎 Pricing Plans</div>
+        <h2>Choose Your <span class="text-gradient">Plan</span></h2>
+        <p>Invest in your child's future with our flexible pricing</p>
+      </div>
+
+      <div class="grid-3" style="max-width:1000px;margin:0 auto;align-items:stretch">
+        <!-- Free Plan -->
+        <div class="pricing-card">
+          <div style="font-size:2.5rem;margin-bottom:8px">🌱</div>
+          <h3>Starter</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">Perfect for trying out</p>
+          <div class="price">$0<span>/month</span></div>
+          <ul class="plan-features">
+            <li>1 child account</li>
+            <li>3 courses access</li>
+            <li>2 games per day</li>
+            <li>Basic progress tracking</li>
+            <li>Community support</li>
+          </ul>
+          <a href="register.html" class="btn btn-outline" style="width:100%">Get Started Free</a>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="pricing-card featured">
+          <div style="font-size:2.5rem;margin-bottom:8px">🚀</div>
+          <h3>Pro Family</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">Most popular for families</p>
+          <div class="price">$9.99<span>/month</span></div>
+          <ul class="plan-features">
+            <li>Up to 3 child accounts</li>
+            <li>Unlimited courses</li>
+            <li>Unlimited games</li>
+            <li>AI Buddy chatbot</li>
+            <li>Detailed progress reports</li>
+            <li>Priority support</li>
+            <li>Parent chat rooms</li>
+          </ul>
+          <a href="register.html" class="btn btn-primary" style="width:100%">Start Free Trial</a>
+        </div>
+
+        <!-- School Plan -->
+        <div class="pricing-card">
+          <div style="font-size:2.5rem;margin-bottom:8px">🏫</div>
+          <h3>School</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem">For schools and institutions</p>
+          <div class="price">$49<span>/month</span></div>
+          <ul class="plan-features">
+            <li>Up to 50 student accounts</li>
+            <li>All courses and games</li>
+            <li>Teacher dashboard</li>
+            <li>Custom content upload</li>
+            <li>Analytics and reports</li>
+            <li>Dedicated support</li>
+            <li>API access</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline" style="width:100%">Contact Sales</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="max-width:700px;margin:60px auto 0">
+        <h3 style="text-align:center;margin-bottom:24px">Frequently Asked Questions</h3>
+        <div class="card" style="padding:20px;margin-bottom:12px">
+          <h4 style="font-size:0.95rem">Can I switch plans anytime?</h4>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px">Yes! You can upgrade or downgrade your
+            plan at any time. Changes take effect at the next billing cycle.</p>
+        </div>
+        <div class="card" style="padding:20px;margin-bottom:12px">
+          <h4 style="font-size:0.95rem">Is there a free trial for Pro?</h4>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px">Yes, all Pro plans come with a 14-day
+            free trial. No credit card required to start.</p>
+        </div>
+        <div class="card" style="padding:20px;margin-bottom:12px">
+          <h4 style="font-size:0.95rem">What payment methods do you accept?</h4>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px">We accept all major credit cards,
+            PayPal, and Apple Pay.</p>
+        </div>
+        <div class="card" style="padding:20px">
+          <h4 style="font-size:0.95rem">Can I get a refund?</h4>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:6px">We offer a 30-day money-back guarantee
+            on all paid plans.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Young Innovators. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+  <script src="./security.js"></script>
+  <script src="./splash.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning Resources - Young Innovators</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f3ff;
+            color: #222;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #7c6df2;
+        }
+
+        /* HERO */
+
+        .hero {
+            text-align: center;
+            padding: 70px 20px 50px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #666;
+        }
+
+        /* SECTION */
+
+        .resources {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(124, 109, 242, 0.08);
+
+            transition: 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(124, 109, 242, 0.15);
+        }
+
+        .resource-card h2 {
+            font-size: 34px;
+            margin-bottom: 14px;
+        }
+
+        .resource-card p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .resource-btn {
+            display: inline-block;
+            padding: 14px 26px;
+            background: linear-gradient(135deg, #6d5dfc, #9b8cff);
+            color: white;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .resource-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <div class="navbar">
+
+        <a href="index.html" class="brand">
+            <img src="./logo.png">
+            <span>Young Innovators</span>
+        </a>
+
+    </div>
+
+    <!-- HERO -->
+
+    <section class="hero">
+        <h1>Learning Resources 📚</h1>
+        <p>Helpful educational resources for students, parents, and providers.</p>
+    </section>
+
+    <!-- CARDS -->
+
+    <section class="resources">
+
+        <!-- HELP -->
+
+        <div class="resource-card" id="help">
+
+            <h2>Help Center 💡</h2>
+
+            <p>
+                Need help using the platform?
+                Learn how courses, games, dashboards,
+                and accounts work step by step.
+            </p>
+
+            <a href="contact.html" class="resource-btn">
+                Get Help
+            </a>
+
+        </div>
+
+        <!-- PARENT -->
+
+        <div class="resource-card" id="parent">
+
+            <h2>Parent Guide 👨‍👩‍👧</h2>
+
+            <p>
+                Learn how to monitor your child’s progress,
+                learning streaks, enrolled courses,
+                and educational growth.
+            </p>
+
+            <a href="parent-dashboard.html" class="resource-btn">
+                Parent Dashboard
+            </a>
+
+        </div>
+
+        <!-- SAFETY -->
+
+        <div class="resource-card" id="safety">
+
+            <h2>Safety Policy 🛡️</h2>
+
+            <p>
+                Young Innovators is designed to provide a
+                safe and child-friendly educational environment
+                for ages 10–13.
+            </p>
+
+            <a href="privacy-policy.html#coppa" class="resource-btn">
+                Read Policy
+            </a>
+
+        </div>
+
+        <!-- BLOG -->
+
+        <div class="resource-card" id="blog">
+
+            <h2>Blog ✍️</h2>
+
+            <p>
+                Educational articles, coding tips,
+                AI learning updates,
+                and platform news will appear here soon.
+            </p>
+
+            <a href="#" class="resource-btn">
+                Coming Soon
+            </a>
+
+        </div>
+
+    </section>
+
+</body>
+
+</html>
